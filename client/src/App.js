@@ -1,47 +1,40 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import axios from 'axios';
 import './App.css';
 
 class App extends Component {
-
-  state = {
-    users: []
+  
+  constructor() {
+    super();
+    this.state = {
+      users: []
+    }
+    this.getUsers = this.getUsers.bind(this);
   }
-  componentDidMount() {
+
+  componentDidMount(){
     this.getUsers();
   }
 
-  getUsers = _ => {
-    fetch('http://localhost:3001')
-      .then(response => console.log(response))
-      .then(response => this.setState({ users: response.users }))
-      .catch(err => console.log(err));
+  getUsers() {
+        axios.get('/users')
+    .then((data) => {
+      console.log(data.data.users);
+      this.setState({users: data.data.users});
+    })
+    .catch(error => console.log(error));
   }
-
-  showUsers = user => <div key={user.id}>{user.username}</div>
-
+  
   render() {
     const { users } = this.state;
     return (
       <div className="App">
-        {/* <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header> */}
-        {users.map(this.showUsers())}
+        hi
+        {users.map(user => <div key={user.id}>{user.firstName} {user.lastName}</div>)}
       </div>
     );
   }
 }
 
 export default App;
+
