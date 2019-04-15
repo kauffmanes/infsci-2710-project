@@ -5,6 +5,7 @@
 4. install yarn -> https://yarnpkg.com/lang/en/docs/install/#debian-stable
 5. to start backend: `cd backend && yarn start`
 5. to build frontend: `yarn start` or `yarn build`
-6. open in browser
+6. open in browser 
+http://localhost:3001/
 
 google doc for drafting structure: https://docs.google.com/document/d/1JVpZHYpeQsk6zc3esfgODTGpUzecoJ-6rSoqZdDxqRA/edit?usp=sharing
