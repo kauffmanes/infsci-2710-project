@@ -1,14 +1,14 @@
-module.exports = function(app, connection){
-	// If no matching route is found default to index.html
-	app.get('/', function(req, res) {
-		res.send('Hello from simple-react project');
-	});
+'use strict';
 
-	// handle user routes
-	app.route('/users')
-		.get((req, res) => {
-			connection.query('SELECT * FROM `iotstore`.users', (err, data) => {
-				err ? res.status(404).send(err) : res.json({ users: data });
-			});
-		});
-}
+const express = require('express');
+// const verifyToken = require('../utils').verifyToken;
+
+const productRouter = require('./products');
+
+const apiRouter = express.Router();
+
+apiRouter
+	.use('/products', productRouter)
+	.use('/', (_, res) => res.send('API is up and running'));
+
+module.exports = apiRouter;

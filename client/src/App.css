@@ -12,10 +12,10 @@ h1 {
   padding: 2rem 0;
   color: white;
 }
-
+/* 
 .App {
   background: 'rgba(0,0,0,.1)';
-}
+} */
 
 @keyframes App-logo-spin {
   from {
@@ -42,4 +42,24 @@ h1 {
 
 .c-filters__adv {
   padding: 2rem 0;
+  display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	/* grid-template-rows: 10vh; */
+	grid-column-gap: 1rem;
+	align-items: center;
+	/* grid-template-areas: 'back tertiary secondary primary'; */
+}
+
+.c-filters__block {
+  background: red;
+}
+
+.c-filters__input {
+  margin-bottom: .5rem;
+}
+
+.c-products {
+  background: rgba(0,0,0,.05);
+  padding: 4rem;
+  display: grid;
 }
