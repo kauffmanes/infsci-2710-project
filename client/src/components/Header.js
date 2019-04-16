@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 const styles = {
 	textAlign: `left`,
@@ -10,7 +9,7 @@ const styles = {
 
 const Header = () => (
 	<header style={styles}>
-		<Link to={'/'}><h1>Robot &amp; Components Store</h1></Link>
+		<a href='/home'><h1>Robot &amp; Components Store</h1></a>
 	</header>
 );
 
