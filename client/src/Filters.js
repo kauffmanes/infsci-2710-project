@@ -1,12 +1,5 @@
 import React, { Component } from 'react';
 
-const styles = {
-	textAlign: 'left',
-	padding: '2rem 4rem',
-	display: 'block',
-	bottomBorder: 'rgba(0,0,0,.1)'
-};
-
 const inputStyles = {
 	width: '50vw',
 	padding: `1rem`,
@@ -20,9 +13,9 @@ class Filters extends Component {
 	}
 	render() {
 		return (
-			<aside style={styles}>
+			<aside className='c-filters'>
 				<input style={inputStyles} type="search" placeholder='Start typing to search by product name or description...' />
-				<button className='o-btn-link' type='button' onClick={() => this.setState({ showAdvanced: !this.state.showAdvanced })}>Advanced Search</button>
+				<button style={{display: 'block', padding: 0}} className='o-btn-link' type='button' onClick={() => this.setState({ showAdvanced: !this.state.showAdvanced })}>Advanced Search</button>
 				{this.state.showAdvanced ? <div className='c-filters__adv'>
 					<div>
 						<label>
