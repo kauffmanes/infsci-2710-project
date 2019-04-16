@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 const Pagination = (props) => {
 	return (
@@ -9,4 +10,10 @@ const Pagination = (props) => {
 	);
 };
 
-export default Pagination;
+const mapStateToProps = state => ({
+	offset: state.products.offset,
+	limit: state.products.limit,
+	count: state.products.count
+});
+
+export default connect(mapStateToProps)(Pagination);

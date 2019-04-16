@@ -6,7 +6,8 @@ productsRouter.get('/', (req, res) => {
 	const options = {
 		offset: parseInt(req.query.offset, 10) || 0,
 		limit: parseInt(req.query.limit, 10) || 10,
-		priceSort: req.query.price
+		priceSort: req.query.price,
+		query: req.query.q
 	};
 	Product.getAll(options, function (err, response) {
 		console.log('prod callback');

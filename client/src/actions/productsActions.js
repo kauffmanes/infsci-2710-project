@@ -33,7 +33,14 @@ export const fetchAllProducts = () => dispatch => {
 
 	let state = store.getState().products;
 
-	axios.get(`/api/products?limit=${state.limit}&offset=${state.offset}&price=${state.priceSort}`).then(response => {
+	axios.get('/api/products', {
+		params: {
+			limit: state.limit,
+			offset: state.offset,
+			price: state.priceSort,
+			q: state.query
+		}
+	}).then(response => {
 		const data = response && response.data;
 		dispatch({ type: UPDATE_PRODUCTS, products: data.products });
 		dispatch({ type: UPDATE_COUNT, count: data.count });

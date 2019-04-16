@@ -30,13 +30,13 @@ class Products extends Component {
 
 	componentDidMount() {
 		const urlParams =  queryString.parse(this.props.location && this.props.location.search);
-		if (urlParams.limit) this.props.updateLimit(urlParams.limit);
-		if (urlParams.offset) this.props.updateOffset(urlParams.offset);
+		if (urlParams.limit) this.props.updateLimit(parseInt(urlParams.limit, 10));
+		if (urlParams.offset) this.props.updateOffset(parseInt(urlParams.offset, 10));
 		this.props.fetchAllProducts();
 	}
 
 	componentDidUpdate(prevProps) {
-		if (prevProps.priceSort !== this.props.priceSort) {
+		if (prevProps.priceSort !== this.props.priceSort || prevProps.query !== this.props.query) {
 			this.props.updateOffset(0);
 			this.props.fetchAllProducts();
 		}
@@ -65,7 +65,7 @@ class Products extends Component {
 					<div className='c-products'>
 						{this.props.products.map(item => <Item key={item.product_id} {...item} />)}
 					</div>
-					<Pagination limit={this.props.limit} offset={this.props.offset} count={this.props.count} next={this.next} prev={this.prev}/>
+					<Pagination next={this.next} prev={this.prev}/>
 				</main>
 			);
 		} else {
@@ -79,7 +79,8 @@ const mapStateToProps = state => ({
 	products: state.products.products,
 	limit: state.products.limit,
 	offset: state.products.offset,
-	count: state.products.count
+	count: state.products.count,
+	query: state.products.query
 });
 
 export default connect(mapStateToProps, {

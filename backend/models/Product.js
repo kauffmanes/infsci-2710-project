@@ -19,7 +19,10 @@ Product.getProductById = function (_id, result) {
 }
 
 Product.getAll = function(options, result) {
-	sql.query(`SELECT COUNT(*) as count FROM Products`, function (err, countRows) {
+
+	const query = `WHERE name LIKE '%${options.query}%' OR description LIKE '%${options.query}%' ORDER BY price ${options.priceSort || 'ASC'}`;
+
+	sql.query(`SELECT COUNT(*) as count FROM Products ${query}`, function (err, countRows) {
 		
 		if (err) {
 			result(err, null);
@@ -31,10 +34,8 @@ Product.getAll = function(options, result) {
 		}
 
 		const count = countRows[0] && countRows[0].count;
-		const priceSort = options.priceSort || 'ASC';
-
-
-		sql.query(`SELECT * FROM Products ORDER BY price ${priceSort} LIMIT ${options.limit} OFFSET ${options.offset}`, function (err, productRows) {
+		
+		sql.query(`SELECT * FROM Products ${query} LIMIT ${options.limit} OFFSET ${options.offset}`, function (err, productRows) {
 			if (err) {
 				console.log(err);
 				result(err, null);
