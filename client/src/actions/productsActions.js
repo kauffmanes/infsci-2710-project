@@ -41,7 +41,7 @@ export const updateLimit = (limit) => dispatch => {
 };
 
 export const updateCategoryId = (categoryId) => dispatch => {
-	dispatch({ type: UPDATE_CATEGORY_ID, categoryId: parseInt(categoryId, 10) });
+	dispatch({ type: UPDATE_CATEGORY_ID, categoryId: categoryId ? parseInt(categoryId, 10) : '' });
 };
 
 export const updateOffset = (offset) => dispatch => {

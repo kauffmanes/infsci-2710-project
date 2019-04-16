@@ -47,7 +47,7 @@ class Filters extends Component {
 				
 				<input style={inputStyles} type="search" onChange={this.handleQuery} placeholder='Start typing to search by product name or description...' />
 				
-				<button style={{display: 'block', padding: 0}} className='o-btn-link' type='button' onClick={() => this.setState({ showAdvanced: !this.state.showAdvanced })}>Advanced Search</button>
+				<button style={{display: 'block', padding: 0}} className='o-btn-link' type='button' onClick={() => this.setState({ showAdvanced: !this.state.showAdvanced })}>{this.state.showAdvanced ? `Hide Filters` : `Show Filters`}</button>
 				
 				{this.state.showAdvanced ? <div className='c-filters__adv'>
 					<div>
@@ -70,8 +70,10 @@ class Filters extends Component {
 					<div>
 						<label>
 							<strong style={{ display: 'block', marginBottom: '1rem'}}>Categories:</strong>
+							<div className='c-filters__input'>
+								<input onChange={this.handleCatChange} type='radio' checked={!this.props.categoryId} value=""/> None
+							</div>
 							{this.props.categories.map(category => {
-								console.log(this.props.categoryId)
 								return (
 									<div key={category.category_id} className='c-filters__input'>
 										<input onChange={this.handleCatChange} type='radio' checked={category.category_id === this.props.categoryId} value={category.category_id}/> {category.category_name}
