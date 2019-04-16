@@ -4,7 +4,7 @@
 3. install frontend: `cd client && npm install`
 4. install yarn -> https://yarnpkg.com/lang/en/docs/install/#debian-stable
 5. to start backend: `cd backend && yarn start`
-5. to build frontend: `yarn start` or `yarn build`
+5. to build frontend: `cd client yarn start` or `yarn build`
 6. open in browser 
 
 

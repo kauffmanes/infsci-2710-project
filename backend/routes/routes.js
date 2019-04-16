@@ -3,14 +3,14 @@ module.exports = function(app, connection){
 	// User resource
 	app.route('/users')
 		.get((req, res) => {
-			connection.query('SELECT * FROM `iotstore`.Customer', (err, data) => {
+			connection.query('SELECT * FROM Customer', (err, data) => {
 				err ? res.status(404).send(err) : res.json({ users: data });
 			});
 		});
 
 	// Product Resource
 	app.route('./products').get((req, res) => {
-		connection.query('SELECT * FROM `iotstore`.Products', (err, data) => {
+		connection.query('SELECT * FROM Products', (err, data) => {
 			err ? res.status(404).send(err) : res.json({ users: data });
 		});
 	});
