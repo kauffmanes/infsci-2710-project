@@ -1,12 +1,26 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { Link, Redirect } from 'react-router-dom';
 import Placeholder from '../placeholder.jpg';
 
-const Item = props => (
-	<div className='c-products__item'>
-		<img src={Placeholder} alt={props.name} />
-		<h2>{props.name}</h2>
-		<p>{`$${props.price.toFixed(2)}`}</p>
-	</div>
-);
+class Item extends Component {
+	state = {
+		itemRedirect: false
+	}
+	render() {
+		let href = `/products/id/${this.props.product_id}`;
+
+		if (this.state.itemRedirect) {
+			return <Redirect to={href} />;
+		}
+
+		return (
+			<div className='c-products__item'>
+				<img onClick={() => this.setState({ itemRedirect: true })} src={Placeholder} alt={this.props.name} />
+				<Link to={href}><h2>{this.props.name}</h2></Link>
+				<p>{`$${this.props.price.toFixed(2)}`}</p>
+			</div>
+		);
+	}
+}
 
 export default Item;

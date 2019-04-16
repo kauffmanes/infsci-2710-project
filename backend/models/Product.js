@@ -8,7 +8,7 @@ const Product = function(product) {
 };
 
 Product.getProductById = function (_id, result) {
-	sql.query('SELECT * FROM Products WHERE id = ? ', _id, function (err, res) {
+	sql.query('SELECT * FROM Products p, Category c WHERE p.product_id = ? AND p.category_id = c.category_id', _id, function (err, res) {
 		if (err) {
 			console.log(err);
 			result(err, null);
@@ -20,9 +20,9 @@ Product.getProductById = function (_id, result) {
 
 Product.getAll = function(options, result) {
 
-	const query = `WHERE name LIKE '%${options.query}%' OR description LIKE '%${options.query}%' ORDER BY price ${options.priceSort || 'ASC'}`;
-
-	sql.query(`SELECT COUNT(*) as count FROM Products ${query}`, function (err, countRows) {
+	const query = `SELECT COUNT(*) as count FROM Products WHERE (name LIKE ${sql.escape(`%${options.query || ''}%`)} OR description LIKE ${sql.escape(`%${options.query || ''}%`)}) ${options.categoryId ? `AND category_id = ${options.categoryId}` : ''} ORDER BY price ${options.priceSort || 'ASC'}`;
+	console.log(query);
+	sql.query(query, function (err, countRows) {
 		
 		if (err) {
 			result(err, null);
@@ -35,7 +35,7 @@ Product.getAll = function(options, result) {
 
 		const count = countRows[0] && countRows[0].count;
 		
-		sql.query(`SELECT * FROM Products ${query} LIMIT ${options.limit} OFFSET ${options.offset}`, function (err, productRows) {
+		sql.query(`SELECT * FROM Products WHERE (name LIKE ${sql.escape(`%${options.query || ''}%`)} OR description LIKE ${sql.escape(`%${options.query || ''}%`)}) ${options.categoryId ? `AND category_id = ${options.categoryId}` : ''} ORDER BY price ${options.priceSort || 'ASC'} LIMIT ${options.limit} OFFSET ${options.offset}`, function (err, productRows) {
 			if (err) {
 				console.log(err);
 				result(err, null);

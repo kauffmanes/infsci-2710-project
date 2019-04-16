@@ -7,10 +7,22 @@ productsRouter.get('/', (req, res) => {
 		offset: parseInt(req.query.offset, 10) || 0,
 		limit: parseInt(req.query.limit, 10) || 10,
 		priceSort: req.query.price,
-		query: req.query.q
+		query: req.query.q,
+		categoryId: req.query.cat || null
 	};
 	Product.getAll(options, function (err, response) {
-		console.log('prod callback');
+		if (err) {
+			return res.send(err);
+		}
+		return res.send(response);
+	});
+});
+
+productsRouter.get('/id/:id', (req, res) => {
+
+	const productId = req.params.id;
+	
+	Product.getProductById(productId, function (err, response) {
 		if (err) {
 			return res.send(err);
 		}

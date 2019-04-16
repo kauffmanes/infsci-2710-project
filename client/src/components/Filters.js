@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { updatePriceSort, updateQuery } from '../actions/productsActions';
+import {
+	updatePriceSort,
+	updateQuery,
+	getAllCategories,
+	updateCategoryId
+} from '../actions/productsActions';
 
 const inputStyles = {
 	width: '100%',
@@ -17,15 +22,22 @@ class Filters extends Component {
 		}
 		this.handleChange = this.handleChange.bind(this);
 		this.handleQuery = this.handleQuery.bind(this);
+		this.handleCatChange = this.handleCatChange.bind(this);
+	}
+
+	componentDidMount() {
+		this.props.getAllCategories();
 	}
 
 	handleChange(evt) {
-		console.log(evt.target.value)
 		this.props.updatePriceSort(evt.target.value);
 	}
 
+	handleCatChange(evt) {
+		this.props.updateCategoryId(evt.target.value);
+	}
+
 	handleQuery(evt) {
-		console.log(evt.target.value);
 		this.props.updateQuery(evt.target.value);
 	}
 
@@ -48,19 +60,27 @@ class Filters extends Component {
 							</div>
 							
 							<div className='c-filters__input'>
-								<input onChange={this.handleChange} type='radio' value='DESC' checked={this.props.priceSort !== 'ASC'}/> Price (high)
+								<input onChange={this.handleChange} type='radio' value='DESC' checked={this.props.priceSort === 'DESC'}/> Price (high)
 							</div>
 
 						</label>
 					</div>
-					{/* <div>
+					
+					{/* categories */}
+					<div>
 						<label>
-							<strong style={{ display: 'block', marginBottom: '1rem'}}>Vendor:</strong>
-							<div className='c-filters__input'><input type='radio' value='asc'/> Alphabetically</div>
-							<div className='c-filters__input'><input type='radio' value='price-low'/> Price (low)</div>
-							<div className='c-filters__input'><input type='radio' value='price-high'/> Price (high)</div>
+							<strong style={{ display: 'block', marginBottom: '1rem'}}>Categories:</strong>
+							{this.props.categories.map(category => {
+								console.log(this.props.categoryId)
+								return (
+									<div key={category.category_id} className='c-filters__input'>
+										<input onChange={this.handleCatChange} type='radio' checked={category.category_id === this.props.categoryId} value={category.category_id}/> {category.category_name}
+									</div>
+									);
+								})
+							}
 						</label>
-					</div> */}
+					</div>
 				</div> : null}
 			</aside>
 		)
@@ -68,10 +88,14 @@ class Filters extends Component {
 }
 
 const mapStateToProps = state => ({
-	priceSort: state.products.priceSort
+	priceSort: state.products.priceSort,
+	categories: state.products.categories,
+	categoryId: state.products.categoryId
 });
 
 export default connect(mapStateToProps, {
 	updatePriceSort,
-	updateQuery
+	updateQuery,
+	getAllCategories,
+	updateCategoryId
 })(Filters);
