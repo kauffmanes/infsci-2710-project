@@ -13,18 +13,28 @@ import {
 	UPDATE_PRODUCT_DETAILS,
 	UPDATE_CATEGORY_ID,
 	UPDATE_CATEGORIES,
-	FAILED_TO_UPDATE_CATEGORIES
+	FAILED_TO_UPDATE_CATEGORIES,
+	UPDATE_RELATED_CATEGORIES,
+	FAILED_TO_UPDATE_RELATED_CATEGORIES
 } from './types';
 
 const store = configureStore;
 
 export const getAllCategories = () => dispatch => {
-
 	axios.get('/api/categories').then(response => {
 		const data = response && response.data;
 		dispatch({ type: UPDATE_CATEGORIES, categories: data });
 	}).catch(err => {
 		dispatch({ type: FAILED_TO_UPDATE_CATEGORIES });
+	});
+};
+
+export const getCategoriesById = (id) => dispatch => {
+	axios.get(`/api/categories/id/${id}`).then(response => {
+		const data = response && response.data;
+		dispatch({ type: UPDATE_RELATED_CATEGORIES, relatedCategories: data });
+	}).catch(err => {
+		dispatch({ type: FAILED_TO_UPDATE_RELATED_CATEGORIES });
 	});
 };
 

@@ -6,12 +6,14 @@ import ProductDetails from './pages/ProductDetails';
 
 export const Routes = () => (
 	<Router>
+		<div>
 			<Switch>
-			<Route exact path='/home' component={Home} />
-			<Route exact path='/products/id/:productId' component={ProductDetails} />
-			<Route exact path="/" render={() => <Redirect to="/home" />} />
-			<Redirect to="/" />
-		</Switch>
+				<Route exact path='/home' component={Home} />
+				<Route exact path='/products/id/:productId' component={ProductDetails} />
+				<Route exact path="/" render={() => <Redirect to="/home" />} />
+				<Redirect to="/" />
+			</Switch>
+		</div>
 	</Router>
 );
 

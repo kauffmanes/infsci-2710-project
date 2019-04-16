@@ -11,7 +11,9 @@ import {
 	UPDATE_PRODUCT_DETAILS,
 	UPDATE_CATEGORY_ID,
 	UPDATE_CATEGORIES,
-	FAILED_TO_UPDATE_CATEGORIES
+	FAILED_TO_UPDATE_CATEGORIES,
+	UPDATE_RELATED_CATEGORIES,
+	FAILED_TO_UPDATE_RELATED_CATEGORIES
 } from '../actions/types';
 
 const initialState = {
@@ -23,7 +25,8 @@ const initialState = {
 	count: 0,
 	productDetails: {},
 	categoryId: null,
-	categories: []
+	categories: [],
+	relatedCategories: []
 };
 
 export default (state = initialState, action) => {
@@ -54,6 +57,10 @@ export default (state = initialState, action) => {
 			return { ...state, categories: action.categories };
 		case FAILED_TO_UPDATE_CATEGORIES:
 			return { ...state, categories: [] };
+		case UPDATE_RELATED_CATEGORIES:
+			return { ...state, relatedCategories: action.relatedCategories };
+		case FAILED_TO_UPDATE_RELATED_CATEGORIES:
+			return { ...state, relatedCategories: [] };
 		default:
       return state;
 	}

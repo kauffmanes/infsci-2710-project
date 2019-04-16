@@ -18,7 +18,7 @@ class Filters extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			showAdvanced: false
+			showAdvanced: true
 		}
 		this.handleChange = this.handleChange.bind(this);
 		this.handleQuery = this.handleQuery.bind(this);

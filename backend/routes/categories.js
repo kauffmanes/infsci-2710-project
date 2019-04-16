@@ -11,4 +11,16 @@ categoriesRouter.get('/', (req, res) => {
 	});
 });
 
+categoriesRouter.get('/id/:id', (req, res) => {
+
+	const catId = req.params.id;
+	
+	Category.getCategoryById(catId, function (err, response) {
+		if (err) {
+			return res.send(err);
+		}
+		return res.send(response);
+	});
+});
+
 module.exports = categoriesRouter;

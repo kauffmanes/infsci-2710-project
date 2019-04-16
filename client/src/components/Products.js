@@ -30,6 +30,7 @@ class Products extends Component {
 
 	componentDidMount() {
 		const urlParams =  queryString.parse(this.props.location && this.props.location.search);
+		
 		if (urlParams.limit) this.props.updateLimit(parseInt(urlParams.limit, 10));
 		if (urlParams.offset) this.props.updateOffset(parseInt(urlParams.offset, 10));
 		if (urlParams.cat) this.props.updateCategoryId(urlParams.cat);
