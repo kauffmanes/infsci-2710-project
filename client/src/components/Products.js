@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import queryString from 'query-string';
+import { connect } from 'react-redux';
 
 import { history } from '../CustomBrowserWrapper';
 import Item from './Item';
@@ -14,7 +15,8 @@ class Products extends Component {
 			products: [],
 			limit: 12,
 			count: 0,
-			offset: 0
+			offset: 0,
+			price: 'ASC'
 		}
 
 		this.fetchAllProducts = this.fetchAllProducts.bind(this);
@@ -24,14 +26,38 @@ class Products extends Component {
 
 	componentDidMount() {
 		const urlParams =  queryString.parse(this.props.location && this.props.location.search);
-		console.log(urlParams)
-		this.fetchAllProducts(urlParams.limit || this.state.limit, urlParams.offset || this.state.offset);
+		
+		this.setState({
+			limit: parseInt(urlParams.limit, 10) || 12,
+			offset: parseInt(urlParams.offset, 10) || 0,
+			price: urlParams.price || 'ASC'
+		});
+
+		this.fetchAllProducts(this.state.limit, this.state.offset);
+	}
+
+	componentDidUpdate(prevProps) {
+
+		console.log('in update')
+		let curr = this.props.location.search || {};
+		let old = prevProps.location.search || {};
+
+		if (curr.limit !== old.limit || curr.offset !== old.offset || prevProps.priceSort !== this.props.priceSort) {
+			this.fetchAllProducts(this.state.limit, this.state.offset);
+		}
 	}
 
 	fetchAllProducts(limit, offset) {
-		axios.get(`/api/products?limit=${limit}&offset=${offset}`).then(response => {
-			const products = response && response.data && response.data.products || [];
-			this.setState({ products, count: response && response.data && response.data.count || 0 });
+		axios.get(`/api/products?limit=${limit}&offset=${offset}&price=${this.props.priceSort}`).then(response => {
+			const data = response && response.data;
+
+			this.setState({
+				products: data.products || [],
+				count: data.count || 0,
+				limit: data.limit || this.state.limit,
+				offset: data.offset || this.state.offset
+			});
+
 		}).catch(err => {
 			console.log(err);
 		});
@@ -39,14 +65,14 @@ class Products extends Component {
 
 	prev() {
     if (this.state.offset > 0) {
-			history.push(`/api/products?limit=${this.state.limit}&offset=${this.state.offset - this.state.limit}`);
+			history.push(`/home?limit=${this.state.limit}&offset=${this.state.offset - this.state.limit}`);
       this.fetchAllProducts(this.state.limit, this.state.offset - this.state.limit);
     }
 	}
 	
 	next() {
     if (this.state.offset + this.state.limit < this.state.count) {
-			history.push(`/api/products?limit=${this.state.limit}&offset=${this.state.offset + this.state.limit}`);
+			history.push(`/home?limit=${this.state.limit}&offset=${this.state.offset + this.state.limit}`);
 			this.fetchAllProducts(this.state.limit, this.state.offset + this.state.limit);
     }
   }
@@ -58,7 +84,7 @@ class Products extends Component {
 					<div className='c-products'>
 						{this.state.products.map(item => <Item key={item.product_id} {...item} />)}
 					</div>
-					<Pagination next={this.next} prev={this.prev}/>
+					<Pagination limit={this.state.limit} offset={this.state.offset} count={this.state.count} next={this.next} prev={this.prev}/>
 				</main>
 			);
 		} else {
@@ -67,4 +93,8 @@ class Products extends Component {
 	}
 }
 
-export default Products;
+const mapStateToProps = state => ({
+	priceSort: state.priceSort
+});
+
+export default connect(mapStateToProps)(Products);

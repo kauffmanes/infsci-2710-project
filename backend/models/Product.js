@@ -31,14 +31,16 @@ Product.getAll = function(options, result) {
 		}
 
 		const count = countRows[0] && countRows[0].count;
+		const priceSort = options.priceSort || 'ASC';
 
-		sql.query(`SELECT * FROM Products LIMIT ${options.limit} OFFSET ${options.offset}`, function (err, productRows) {
+
+		sql.query(`SELECT * FROM Products ORDER BY price ${priceSort} LIMIT ${options.limit} OFFSET ${options.offset}`, function (err, productRows) {
 			if (err) {
 				console.log(err);
 				result(err, null);
 				return;
 			}
-			result(null, { products: productRows, count });
+			result(null, { products: productRows, count, limit: options.limit, offset: options.offset });
 		});
 	});
 }

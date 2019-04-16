@@ -1,0 +1,1 @@
+export const UPDATE_PRICE_SORT = 'UPDATE_PRICE_SORT';

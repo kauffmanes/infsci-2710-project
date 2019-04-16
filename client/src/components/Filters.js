@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { updatePriceSort } from '../actions/actions';
 
 const inputStyles = {
 	width: '100%',
@@ -8,9 +10,19 @@ const inputStyles = {
 
 
 class Filters extends Component {
-	state = {
-		showAdvanced: false
+	constructor(props) {
+		super(props);
+		this.state = {
+			showAdvanced: false
+		}
+		this.handleChange = this.handleChange.bind(this);
 	}
+
+	handleChange(evt) {
+		console.log(evt.target.value)
+		this.props.updatePriceSort(evt.target.value);
+	}
+
 	render() {
 		return (
 			<aside className='c-filters'>
@@ -19,10 +31,17 @@ class Filters extends Component {
 				{this.state.showAdvanced ? <div className='c-filters__adv'>
 					<div>
 						<label>
+
 							<strong style={{ display: 'block', marginBottom: '1rem'}}>Order by:</strong>
-							<div className='c-filters__input'><input type='radio' value='asc'/> Alphabetically</div>
-							<div className='c-filters__input'><input type='radio' value='price-low'/> Price (low)</div>
-							<div className='c-filters__input'><input type='radio' value='price-high'/> Price (high)</div>
+							
+							<div className='c-filters__input'>
+								<input onChange={this.handleChange} type='radio' value='ASC' checked={this.props.priceSort === 'ASC'}/> Price (low)
+							</div>
+							
+							<div className='c-filters__input'>
+								<input onChange={this.handleChange} type='radio' value='DESC' checked={this.props.priceSort !== 'ASC'}/> Price (high)
+							</div>
+
 						</label>
 					</div>
 					{/* <div>
@@ -39,4 +58,8 @@ class Filters extends Component {
 	}
 }
 
-export default Filters;
+const mapStateToProps = state => ({
+	priceSort: state.priceSort
+});
+
+export default connect(mapStateToProps, { updatePriceSort })(Filters);
