@@ -3,6 +3,10 @@
   --PrimaryBlue: #355C7D
 }
 
+body {
+  font-size: 90%;
+}
+
 /** elements **/
 h1 {
   color: rgba(0,0,0,.7);
@@ -11,22 +15,12 @@ h1 {
   margin: 0;
   padding: 1rem 0;
   color: white;
-  font-size: 1.6rem;
-}
-/* 
-.App {
-  background: 'rgba(0,0,0,.1)';
-} */
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 
+h2 {
+  font-weight: bold;
+  font-size: 1rem;
+}
 
 .o-btn-link {
   border: none;
@@ -67,7 +61,11 @@ h1 {
   padding: 4rem;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-column-gap: 1rem;
+  grid-gap: 1rem;
+}
+
+.c-products--none {
+  padding: 4rem;
 }
 
 .c-products__item {
@@ -77,4 +75,15 @@ h1 {
 
 .c-products__item img {
   width: 100%;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.c-products__item h2 {
+  font-weight: bold;
+}
+
+.c-pagination {
+  padding: 2rem;
+  text-align: center;
 }

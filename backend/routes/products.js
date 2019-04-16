@@ -3,12 +3,16 @@ const productsRouter = express.Router();
 const Product = require('../models/Product');
 
 productsRouter.get('/', (req, res) => {
-	Product.getAll(function (err, products) {
+	const options = {
+		offset: parseInt(req.query.offset, 10) || 0,
+		limit: parseInt(req.query.limit, 10) || 10
+	};
+	Product.getAll(options, function (err, response) {
 		console.log('prod callback');
 		if (err) {
 			return res.send(err);
 		}
-		return res.send(products);
+		return res.send(response);
 	});
 });
 

@@ -18,14 +18,28 @@ Product.getProductById = function (_id, result) {
 	});
 }
 
-Product.getAll = function(result) {
-	sql.query('SELECT * FROM Products', function (err, res) {
+Product.getAll = function(options, result) {
+	sql.query(`SELECT COUNT(*) as count FROM Products`, function (err, countRows) {
+		
 		if (err) {
-			console.log(err);
 			result(err, null);
 			return;
 		}
-		result(null, res);
+
+		if (!countRows || countRows.length < 1) {
+			result('No rows were found.', null);
+		}
+
+		const count = countRows[0] && countRows[0].count;
+
+		sql.query(`SELECT * FROM Products LIMIT ${options.limit} OFFSET ${options.offset}`, function (err, productRows) {
+			if (err) {
+				console.log(err);
+				result(err, null);
+				return;
+			}
+			result(null, { products: productRows, count });
+		});
 	});
 }
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 const inputStyles = {
-	width: '50vw',
+	width: '100%',
 	padding: `1rem`,
 	marginBottom: '.5rem'
 };
@@ -25,14 +25,14 @@ class Filters extends Component {
 							<div className='c-filters__input'><input type='radio' value='price-high'/> Price (high)</div>
 						</label>
 					</div>
-					<div>
+					{/* <div>
 						<label>
 							<strong style={{ display: 'block', marginBottom: '1rem'}}>Vendor:</strong>
 							<div className='c-filters__input'><input type='radio' value='asc'/> Alphabetically</div>
 							<div className='c-filters__input'><input type='radio' value='price-low'/> Price (low)</div>
 							<div className='c-filters__input'><input type='radio' value='price-high'/> Price (high)</div>
 						</label>
-					</div>
+					</div> */}
 				</div> : null}
 			</aside>
 		)
