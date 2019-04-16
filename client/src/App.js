@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 
 import Routes from './Routes';
-import Header from './Header';
+import Header from './components/Header';
 import CustomBrowserRouter from './CustomBrowserWrapper';
 
 import configureStore from './configureStore';
