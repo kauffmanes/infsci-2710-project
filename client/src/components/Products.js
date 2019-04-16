@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import queryString from 'query-string';
 import { connect } from 'react-redux';
 
 import { history } from '../CustomBrowserWrapper';
 import Item from './Item';
 import Pagination from './Pagination';
+import {
+	fetchAllProducts,
+	updateLimit,
+	updateOffset
+} from '../actions/productsActions';
 
 class Products extends Component {
 
@@ -19,72 +24,48 @@ class Products extends Component {
 			price: 'ASC'
 		}
 
-		this.fetchAllProducts = this.fetchAllProducts.bind(this);
 		this.next = this.next.bind(this);
 		this.prev = this.prev.bind(this);
 	}
 
 	componentDidMount() {
 		const urlParams =  queryString.parse(this.props.location && this.props.location.search);
-		
-		this.setState({
-			limit: parseInt(urlParams.limit, 10) || 12,
-			offset: parseInt(urlParams.offset, 10) || 0,
-			price: urlParams.price || 'ASC'
-		});
-
-		this.fetchAllProducts(this.state.limit, this.state.offset);
+		if (urlParams.limit) this.props.updateLimit(urlParams.limit);
+		if (urlParams.offset) this.props.updateOffset(urlParams.offset);
+		this.props.fetchAllProducts();
 	}
 
 	componentDidUpdate(prevProps) {
-
-		console.log('in update')
-		let curr = this.props.location.search || {};
-		let old = prevProps.location.search || {};
-
-		if (curr.limit !== old.limit || curr.offset !== old.offset || prevProps.priceSort !== this.props.priceSort) {
-			this.fetchAllProducts(this.state.limit, this.state.offset);
+		if (prevProps.priceSort !== this.props.priceSort) {
+			this.props.updateOffset(0);
+			this.props.fetchAllProducts();
 		}
 	}
 
-	fetchAllProducts(limit, offset) {
-		axios.get(`/api/products?limit=${limit}&offset=${offset}&price=${this.props.priceSort}`).then(response => {
-			const data = response && response.data;
-
-			this.setState({
-				products: data.products || [],
-				count: data.count || 0,
-				limit: data.limit || this.state.limit,
-				offset: data.offset || this.state.offset
-			});
-
-		}).catch(err => {
-			console.log(err);
-		});
-	}
-
 	prev() {
-    if (this.state.offset > 0) {
-			history.push(`/home?limit=${this.state.limit}&offset=${this.state.offset - this.state.limit}`);
-      this.fetchAllProducts(this.state.limit, this.state.offset - this.state.limit);
+    if (this.props.offset > 0) {
+			history.push(`/home?limit=${this.props.limit}&offset=${parseInt(this.props.offset, 10) - parseInt(this.props.limit, 10)}`);
+			this.props.updateOffset(this.props.offset - this.props.limit);
+      this.props.fetchAllProducts();
     }
 	}
 	
 	next() {
-    if (this.state.offset + this.state.limit < this.state.count) {
-			history.push(`/home?limit=${this.state.limit}&offset=${this.state.offset + this.state.limit}`);
-			this.fetchAllProducts(this.state.limit, this.state.offset + this.state.limit);
+    if (this.props.offset + this.props.limit < this.props.count) {
+			history.push(`/home?limit=${this.props.limit}&offset=${parseInt(this.props.offset, 10) + parseInt(this.props.limit, 10)}`);
+			this.props.updateOffset(this.props.offset + this.props.limit);
+			this.props.fetchAllProducts();
     }
   }
 
 	render() {
-		if (this.state.products && this.state.products.length > 0) {
+		if (this.props.products && this.props.products.length > 0) {
 			return (
 				<main>
 					<div className='c-products'>
-						{this.state.products.map(item => <Item key={item.product_id} {...item} />)}
+						{this.props.products.map(item => <Item key={item.product_id} {...item} />)}
 					</div>
-					<Pagination limit={this.state.limit} offset={this.state.offset} count={this.state.count} next={this.next} prev={this.prev}/>
+					<Pagination limit={this.props.limit} offset={this.props.offset} count={this.props.count} next={this.next} prev={this.prev}/>
 				</main>
 			);
 		} else {
@@ -94,7 +75,15 @@ class Products extends Component {
 }
 
 const mapStateToProps = state => ({
-	priceSort: state.priceSort
+	priceSort: state.products.priceSort,
+	products: state.products.products,
+	limit: state.products.limit,
+	offset: state.products.offset,
+	count: state.products.count
 });
 
-export default connect(mapStateToProps)(Products);
+export default connect(mapStateToProps, {
+	fetchAllProducts,
+	updateLimit,
+	updateOffset
+})(Products);

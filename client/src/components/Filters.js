@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { updatePriceSort } from '../actions/actions';
+import { updatePriceSort, updateQuery } from '../actions/productsActions';
 
 const inputStyles = {
 	width: '100%',
@@ -16,6 +16,7 @@ class Filters extends Component {
 			showAdvanced: false
 		}
 		this.handleChange = this.handleChange.bind(this);
+		this.handleQuery = this.handleQuery.bind(this);
 	}
 
 	handleChange(evt) {
@@ -23,11 +24,19 @@ class Filters extends Component {
 		this.props.updatePriceSort(evt.target.value);
 	}
 
+	handleQuery(evt) {
+		console.log(evt.target.value);
+		this.props.updateQuery(evt.target.value);
+	}
+
 	render() {
 		return (
 			<aside className='c-filters'>
-				<input style={inputStyles} type="search" placeholder='Start typing to search by product name or description...' />
+				
+				<input style={inputStyles} type="search" onChange={this.handleQuery} placeholder='Start typing to search by product name or description...' />
+				
 				<button style={{display: 'block', padding: 0}} className='o-btn-link' type='button' onClick={() => this.setState({ showAdvanced: !this.state.showAdvanced })}>Advanced Search</button>
+				
 				{this.state.showAdvanced ? <div className='c-filters__adv'>
 					<div>
 						<label>
@@ -59,7 +68,10 @@ class Filters extends Component {
 }
 
 const mapStateToProps = state => ({
-	priceSort: state.priceSort
+	priceSort: state.products.priceSort
 });
 
-export default connect(mapStateToProps, { updatePriceSort })(Filters);
+export default connect(mapStateToProps, {
+	updatePriceSort,
+	updateQuery
+})(Filters);
