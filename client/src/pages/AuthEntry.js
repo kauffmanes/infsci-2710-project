@@ -21,6 +21,11 @@ class AuthEntry extends Component {
 				phone: '',
 				passwordVerify: ''
 			},
+			businessData: {
+				businessName: '',
+				fax: '',
+				website: ''
+			},
 			loginData: {
 				username: '',
 				password: ''
@@ -32,6 +37,7 @@ class AuthEntry extends Component {
 		this.handleLoginChange = this.handleLoginChange.bind(this);
 		this.validateNewUser = this.validateNewUser.bind(this);
 		this.login = this.login.bind(this);
+		this.handleBusinessChange = this.handleBusinessChange.bind(this);
 	}
 
 	handleChange(field, value) {
@@ -39,6 +45,14 @@ class AuthEntry extends Component {
 		obj[field] = value;
 		this.setState({
 			newUserData: obj
+		});
+	}
+
+	handleBusinessChange(field, value) {
+		const obj = this.state.businessData;
+		obj[field] = value;
+		this.setState({
+			businessData: obj
 		});
 	}
 
@@ -53,6 +67,7 @@ class AuthEntry extends Component {
 	validateNewUser() {
 		
 		let errors = [];
+		this.props.clearUserErrors();
 
 		Object.entries(this.state.newUserData).forEach(([key, value]) => {
 			if (!value) {
@@ -68,12 +83,20 @@ class AuthEntry extends Component {
 			errors.push('Password length must be between 6 and 12 characters.');
 		}
 
+		if (this.state.showBusinessInputs) {
+			Object.entries(this.state.businessData).forEach(([key, value]) => {
+				if (key !== 'fax' && !value) {
+					errors.push(`${key} is a required field.`);
+				}
+			});
+		}
+
 		this.setState({
 			createUserError: errors
 		});
 
 		if (errors.length === 0) {
-			this.props.createUser(this.state.newUserData);
+			this.props.createUser(Object.assign(this.state.newUserData, this.state.businessData));
 		}
 	}
 
@@ -130,7 +153,7 @@ class AuthEntry extends Component {
 								<input type='password' onChange={(evt) => this.handleChange('passwordVerify', evt.target.value )} />
 							</label>
 							<label>
-								<strong>Are you creating a business account?</strong>
+								<strong>Is this a business account?</strong>
 								<input type='checkbox' onChange={(evt) => this.setState({ showBusinessInputs: evt.target.checked })} />
 							</label>
 						</form>
@@ -138,15 +161,15 @@ class AuthEntry extends Component {
 							<>
 								<label>
 									Business Name
-									<input type='text' onChange={(evt) => this.handleChange('firstName', evt.target.value )} />
+									<input type='text' onChange={(evt) => this.handleBusinessChange('businessName', evt.target.value )} />
 								</label>
 								<label>
 									Fax
-									<input type='text' onChange={(evt) => this.handleChange('lastName', evt.target.value )} />
+									<input type='text' onChange={(evt) => this.handleBusinessChange('fax', evt.target.value )} />
 								</label>
 								<label>
 									Website
-									<input type='text' onChange={(evt) => this.handleChange('firstName', evt.target.value )} />
+									<input type='text' onChange={(evt) => this.handleBusinessChange('website', evt.target.value )} />
 								</label>
 							</>
 						) : null}
