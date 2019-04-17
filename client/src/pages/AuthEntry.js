@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import Layout from '../components/Layout';
+import {
+	createUser,
+	clearUserErrors
+} from '../actions/userActions';
 
 class AuthEntry extends Component {
 
@@ -11,16 +17,21 @@ class AuthEntry extends Component {
 				lastName: '',
 				address: '',
 				zipcode: '',
-				phone: ''
+				city: '',
+				phone: '',
+				passwordVerify: ''
 			},
 			loginData: {
 				username: '',
 				password: ''
 			},
-			showBusinessInputs: false
+			showBusinessInputs: false,
+			createUserError: []
 		};
 		this.handleChange = this.handleChange.bind(this);
 		this.handleLoginChange = this.handleLoginChange.bind(this);
+		this.validateNewUser = this.validateNewUser.bind(this);
+		this.login = this.login.bind(this);
 	}
 
 	handleChange(field, value) {
@@ -29,7 +40,6 @@ class AuthEntry extends Component {
 		this.setState({
 			newUserData: obj
 		});
-		console.log(this.state.newUserData)
 	}
 
 	handleLoginChange(field, value) {
@@ -38,15 +48,41 @@ class AuthEntry extends Component {
 		this.setState({
 			formData: obj
 		});
-		console.log(this.state.formData)
 	}
 
-	createUser() {
+	validateNewUser() {
+		
+		let errors = [];
 
+		Object.entries(this.state.newUserData).forEach(([key, value]) => {
+			if (!value) {
+				errors.push(`${key} is a required field.`);
+			}
+		});
+
+		if (this.state.newUserData.password !== this.state.newUserData.passwordVerify) {
+			errors.push('Passwords do not match.');
+		}
+
+		if (this.state.newUserData.password && (this.state.newUserData.password.length < 6 || this.state.newUserData.password.length > 12 )) {
+			errors.push('Password length must be between 6 and 12 characters.');
+		}
+
+		this.setState({
+			createUserError: errors
+		});
+
+		if (errors.length === 0) {
+			this.props.createUser(this.state.newUserData);
+		}
 	}
 
 	login() {
 
+	}
+
+	componentWillUnmount() {
+		this.props.clearUserErrors();
 	}
 
 	render() {
@@ -55,6 +91,7 @@ class AuthEntry extends Component {
 				<div className='c-auth'>
 					<div className='c-auth__signup'>
 						<h2>Sign up!</h2>
+						{this.props.userId ? <p className='o-success-msg'>Account was created successfully. Login to continue.</p> : null}
 						<form>
 							<label>
 								First Name
@@ -69,6 +106,10 @@ class AuthEntry extends Component {
 								<input type='text' onChange={(evt) => this.handleChange('address', evt.target.value )} />
 							</label>
 							<label>
+								City
+								<input type='text' onChange={(evt) => this.handleChange('city', evt.target.value )} />
+							</label>
+							<label>
 								Zipcode
 								<input type='text' onChange={(evt) => this.handleChange('zipcode', evt.target.value )} />
 							</label>
@@ -77,7 +118,19 @@ class AuthEntry extends Component {
 								<input type='tel' onChange={(evt) => this.handleChange('phone', evt.target.value )} />
 							</label>
 							<label>
-								Are you creating a business account?
+								Email
+								<input type='email' onChange={(evt) => this.handleChange('email', evt.target.value )} />
+							</label>
+							<label>
+								Password
+								<input type='password' onChange={(evt) => this.handleChange('password', evt.target.value )} />
+							</label>
+							<label>
+								Re-enter password
+								<input type='password' onChange={(evt) => this.handleChange('passwordVerify', evt.target.value )} />
+							</label>
+							<label>
+								<strong>Are you creating a business account?</strong>
 								<input type='checkbox' onChange={(evt) => this.setState({ showBusinessInputs: evt.target.checked })} />
 							</label>
 						</form>
@@ -97,7 +150,9 @@ class AuthEntry extends Component {
 								</label>
 							</>
 						) : null}
-						<button type='button' onClick={this.createUser}>Sign up</button>
+						<button type='button' onClick={this.validateNewUser}>Sign up</button>
+						{this.state.createUserError.map((error, idx) => <p className='o-error-msg' key={idx}>{error}</p>)}
+						<p className='o-error-msg'>{this.props.error ? `Error: ${this.props.error}` : null}</p>
 					</div>
 					<div className='c-auth__login'>
 						<label>
@@ -109,6 +164,7 @@ class AuthEntry extends Component {
 							<input type='password' onChange={(evt) => this.handleLoginChange('password', evt.target.value )} />
 						</label>
 						<button type='button' onClick={this.login}>Login</button>
+						<p>{this.state.loginError ? `Error: ${this.state.loginError}` : null}</p>
 					</div>
 				</div>
 			</Layout>
@@ -116,4 +172,12 @@ class AuthEntry extends Component {
 	}
 }
 
-export default AuthEntry;
+const mapStateToProps = state => ({
+	error: state.user.error,
+	userId: state.user.newUser
+});
+
+export default connect(mapStateToProps, {
+	createUser,
+	clearUserErrors
+})(AuthEntry);

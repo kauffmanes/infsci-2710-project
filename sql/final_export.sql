@@ -102,6 +102,8 @@ CREATE TABLE IF NOT EXISTS `Customer` (
   `first_name` varchar(200) NOT NULL,
   `last_name` varchar(200) NOT NULL,
   `address` varchar(200) NOT NULL,
+  `city` varchar(200) NOT NULL,
+  `password` varchar(25) NOT NULL,
   `zipcode` int(20) NOT NULL,
   `phone` varchar(20) NOT NULL,
   `business_id` int(20) DEFAULT NULL,

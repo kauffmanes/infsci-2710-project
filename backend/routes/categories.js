@@ -5,9 +5,9 @@ const Category = require('../models/Category');
 categoriesRouter.get('/', (req, res) => {
 	Category.getAll(null, function (err, response) {
 		if (err) {
-			return res.send(err);
+			return res.status(500).send(err);
 		}
-		return res.send(response);
+		return res.status(200).send(response);
 	});
 });
 
@@ -17,9 +17,9 @@ categoriesRouter.get('/id/:id', (req, res) => {
 	
 	Category.getCategoryById(catId, function (err, response) {
 		if (err) {
-			return res.send(err);
+			return res.status(500).send(err);
 		}
-		return res.send(response);
+		return res.status(200).send(response);
 	});
 });
 

@@ -5,12 +5,13 @@ const express = require('express');
 
 const productRouter = require('./products');
 const categoriesRouter = require('./categories');
-
+const usersRouter = require('./users');
 const apiRouter = express.Router();
 
 apiRouter
 	.use('/products', productRouter)
 	.use('/categories', categoriesRouter)
+	.use('/users', usersRouter)
 	.use('/', (_, res) => res.send('API is up and running'));
 
 module.exports = apiRouter;

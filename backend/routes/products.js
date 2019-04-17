@@ -12,9 +12,9 @@ productsRouter.get('/', (req, res) => {
 	};
 	Product.getAll(options, function (err, response) {
 		if (err) {
-			return res.send(err);
+			return res.status(500).json(err);
 		}
-		return res.send(response);
+		return res.status(200).json(response);
 	});
 });
 
@@ -24,9 +24,9 @@ productsRouter.get('/id/:id', (req, res) => {
 	
 	Product.getProductById(productId, function (err, response) {
 		if (err) {
-			return res.send(err);
+			return res.status(500).json(err);
 		}
-		return res.send(response);
+		return res.status(200).json(response);
 	});
 });
 

@@ -11,10 +11,10 @@ const styles = {
 	justifyContent: 'space-between'
 };
 
-const Header = () => (
+const Header = (props) => (
 	<header style={styles}>
 		<Link to={'/'}><h1>Robot &amp; Components Store</h1></Link>
-		<Link to='/sign-up'>Sign Up / Login</Link>
+		<Link to='/login'>Sign Up / Login</Link>
 	</header>
 );
 
