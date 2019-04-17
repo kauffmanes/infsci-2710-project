@@ -1,8 +1,11 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
+
 const usersRouter = express.Router();
 const User = require('../models/User');
 const Business = require('../models/Business');
 
+// creates a new user
 usersRouter.post('/', (req, res) => {
 
 	if (req.body.businessName) {
@@ -29,6 +32,7 @@ usersRouter.post('/', (req, res) => {
 	}
 });
 
+// returns a user by ID
 usersRouter.get('/id/:id', (req, res) => {
 
 	const userId = req.params.id;
@@ -38,6 +42,52 @@ usersRouter.get('/id/:id', (req, res) => {
 			return res.status(500).json(err);
 		}
 		return res.status(200).json(response);
+	});
+});
+
+
+// authenticates a user
+usersRouter.post('/authenticate', (req, res) => {
+	if (!req.body.email || !req.body.password) {
+		return res.status(400).send('Both a password and username are required.');
+	}
+
+	User.getUserByEmail(req.body.email, function (err, response) {
+
+			if (err) {
+				return res.status(500).send('Something went wrong, unable to login.');
+			}
+	
+			let user; 
+
+			if (Array.isArray(response) && response.length === 1) {
+				user = response[0];
+			} else {
+				return res.status(400).send('No user was found for that email.');
+			}
+
+			if (!user) {
+				return res.status(400).send('No user was found for that email.');
+			}
+	
+			console.log(req.body.password, '---', user.password)
+
+			if (req.body.password === user.password) {
+
+				const payload = {
+					id: user.customer_id,
+					firstName: user.first_name,
+					lastName: user.last_name
+				};
+	
+				const token = jwt.sign(payload, '1234', {
+					expiresIn: 86400
+				});
+	
+				return res.status(200).send(token);
+			} else {
+				return res.status(401).send('Incorrect credentials, please try again.');
+			}
 	});
 });
 

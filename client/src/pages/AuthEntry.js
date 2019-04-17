@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 import Layout from '../components/Layout';
 import {
 	createUser,
-	clearUserErrors
+	clearUserErrors,
+	login
 } from '../actions/userActions';
 
 class AuthEntry extends Component {
@@ -27,11 +29,12 @@ class AuthEntry extends Component {
 				website: ''
 			},
 			loginData: {
-				username: '',
+				email: '',
 				password: ''
 			},
 			showBusinessInputs: false,
-			createUserError: []
+			createUserError: [],
+			loginErrors: []
 		};
 		this.handleChange = this.handleChange.bind(this);
 		this.handleLoginChange = this.handleLoginChange.bind(this);
@@ -41,6 +44,14 @@ class AuthEntry extends Component {
 	}
 
 	handleChange(field, value) {
+
+		this.props.clearUserErrors();
+
+		this.setState({
+			createUserError: []	
+		});
+
+		this.setState();
 		const obj = this.state.newUserData;
 		obj[field] = value;
 		this.setState({
@@ -49,6 +60,13 @@ class AuthEntry extends Component {
 	}
 
 	handleBusinessChange(field, value) {
+
+		this.props.clearUserErrors();
+
+		this.setState({
+			createUserError: []
+		});
+
 		const obj = this.state.businessData;
 		obj[field] = value;
 		this.setState({
@@ -57,17 +75,29 @@ class AuthEntry extends Component {
 	}
 
 	handleLoginChange(field, value) {
-		const obj = this.state.formData;
+
+		this.props.clearUserErrors();
+
+		this.setState({
+			loginErrors: []	
+		});
+
+		const obj = this.state.loginData;
 		obj[field] = value;
 		this.setState({
-			formData: obj
+			loginData: obj
 		});
 	}
 
 	validateNewUser() {
 		
-		let errors = [];
 		this.props.clearUserErrors();
+
+		this.setState({
+			createUserError: []	
+		});
+
+		let errors = [];
 
 		Object.entries(this.state.newUserData).forEach(([key, value]) => {
 			if (!value) {
@@ -102,6 +132,29 @@ class AuthEntry extends Component {
 
 	login() {
 
+		this.props.clearUserErrors();
+
+		this.setState({
+			loginErrors: []	
+		});
+
+		let errors = [];
+
+		if (!this.state.loginData.email) {
+			errors.push('An email is required.')
+		}
+
+		if (!this.state.loginData.password) {
+			errors.push('A password is required.')
+		}
+
+		this.setState({
+			loginErrors: errors
+		});
+
+		if (errors.length === 0) {
+			this.props.login(this.state.loginData);
+		}
 	}
 
 	componentWillUnmount() {
@@ -109,6 +162,11 @@ class AuthEntry extends Component {
 	}
 
 	render() {
+
+		if (this.props.token) {
+			return <Redirect to='/' />;
+		}
+
 		return (
 			<Layout>
 				<div className='c-auth'>
@@ -178,16 +236,20 @@ class AuthEntry extends Component {
 						<p className='o-error-msg'>{this.props.error ? `Error: ${this.props.error}` : null}</p>
 					</div>
 					<div className='c-auth__login'>
-						<label>
-							Email
-							<input type='text' onChange={(evt) => this.handleLoginChange('email', evt.target.value )} />
-						</label>
-						<label>
-							Password
-							<input type='password' onChange={(evt) => this.handleLoginChange('password', evt.target.value )} />
-						</label>
+						<h2>Log in!</h2>
+						<form>
+							<label>
+								Email
+								<input type='text' onChange={(evt) => this.handleLoginChange('email', evt.target.value )} />
+							</label>
+							<label>
+								Password
+								<input type='password' onChange={(evt) => this.handleLoginChange('password', evt.target.value )} />
+							</label>
+						</form>
 						<button type='button' onClick={this.login}>Login</button>
-						<p>{this.state.loginError ? `Error: ${this.state.loginError}` : null}</p>
+						{this.state.loginErrors.map((error, idx) => <p className='o-error-msg' key={idx}>{error}</p>)}
+						<p className='o-error-msg'>{this.props.error ? `Error: ${this.props.error}` : null}</p>
 					</div>
 				</div>
 			</Layout>
@@ -197,10 +259,12 @@ class AuthEntry extends Component {
 
 const mapStateToProps = state => ({
 	error: state.user.error,
-	userId: state.user.newUser
+	userId: state.user.newUser,
+	token: state.user.token
 });
 
 export default connect(mapStateToProps, {
 	createUser,
-	clearUserErrors
+	clearUserErrors,
+	login
 })(AuthEntry);

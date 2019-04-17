@@ -1,8 +1,15 @@
 import axios from 'axios';
+import { history } from '../CustomBrowserWrapper';
+import { setAuthToken, decodeToken } from '../jwtHelper';
+
 import {
 	CREATE_NEW_USER,
 	FAILED_TO_CREATE_USER,
-	CLEAR_USER_ERRORS
+	CLEAR_USER_ERRORS,
+	FAILED_TO_AUTHENTICATE,
+	UPDATE_TOKEN,
+	SET_CURRENT_USER,
+	CLEAR_CURRENT_USER
 } from './types';
 
 export const createUser = (user) => dispatch => {
@@ -16,4 +23,36 @@ export const createUser = (user) => dispatch => {
 
 export const clearUserErrors = () => dispatch => {
 	dispatch({ type: CLEAR_USER_ERRORS });
+};
+
+export const login = (credentials) => dispatch => {
+	axios.post('/api/users/authenticate', credentials).then(response => {
+		const token = response && response.data && response.data;
+		localStorage.setItem('token', token);
+		dispatch({ type: UPDATE_TOKEN, token });
+		const decoded = decodeToken(token);
+  	dispatch(setCurrentUser(decoded));
+	}).catch(error => {
+		console.log(error)
+		dispatch({ type: FAILED_TO_AUTHENTICATE, error: error && error.response && error.response.data || 'Unable to authenticate.' })
+	});
+};
+
+export const logout = () => dispatch => {
+	history.push('/');
+	localStorage.removeItem('token');
+	dispatch({ type: UPDATE_TOKEN, token: null });
+	dispatch(clearCurrentUser());
+	setAuthToken(false);
+};
+
+export const clearCurrentUser = () => dispatch => {
+	dispatch({ type: CLEAR_CURRENT_USER })
+};
+
+export const setCurrentUser = (decoded) => dispatch => {
+	dispatch({
+		type: SET_CURRENT_USER,
+		decoded
+	});
 };

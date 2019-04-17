@@ -1,33 +1,48 @@
 import React, { Component } from 'react';
-import { Provider as ReduxProvider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import Routes from './Routes';
 import Header from './components/Header';
 import CustomBrowserRouter from './CustomBrowserWrapper';
+import { logout, setCurrentUser, clearCurrentUser } from './actions/userActions';
+import { decodeToken, isTokenExpired } from './jwtHelper';
 
-import configureStore from './configureStore';
 import './normalize.css';
 import './App.css';
 
-const store = configureStore;
+import store from './configureStore';
+
+if (localStorage.getItem('token')) {
+
+  const decoded = decodeToken(localStorage.getItem('token'));
+  store.dispatch(setCurrentUser(decoded));
+
+  if (isTokenExpired(localStorage.getItem('token'))) {
+    store.dispatch(logout());
+    store.dispatch(clearCurrentUser());
+    window.location.href = '/';
+  }
+}
+
 
 class App extends Component {
-  
   render() {
     return (
       <CustomBrowserRouter>
-        <ReduxProvider store={store}>
           <div className="App">
             <BrowserRouter>
               <Header />
               <Routes />
             </BrowserRouter>
           </div>
-        </ReduxProvider>
       </CustomBrowserRouter>
     );
   }
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  token: state.user.token
+});
+
+export default connect(mapStateToProps)(App);

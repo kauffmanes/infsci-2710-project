@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { logout } from '../actions/userActions';
 
 const styles = {
 	textAlign: `left`,
@@ -14,8 +16,12 @@ const styles = {
 const Header = (props) => (
 	<header style={styles}>
 		<Link to={'/'}><h1>Robot &amp; Components Store</h1></Link>
-		<Link to='/login'>Sign Up / Login</Link>
+		{props.currentUser && props.currentUser.firstName ? (<p>{`Hi ${props.currentUser.firstName}`}  (<button onClick={props.logout} style={{ color: 'white'	}} className='o-btn-link'>logout</button>)</p>) : (<Link to='/login'>Sign Up / Login</Link>)}
 	</header>
 );
 
-export default Header;
+const mapStateToProps = state => ({
+	currentUser: state.user.currentUser
+});
+
+export default connect(mapStateToProps, { logout })(Header);

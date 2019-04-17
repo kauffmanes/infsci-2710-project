@@ -107,7 +107,8 @@ CREATE TABLE IF NOT EXISTS `Customer` (
   `zipcode` int(20) NOT NULL,
   `phone` varchar(20) NOT NULL,
   `business_id` int(20) DEFAULT NULL,
-  `state_id` int(20) DEFAULT NULL
+  `state_id` int(20) DEFAULT NULL,
+  `email` varchar(200)`
 ) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=latin1;
 
 --

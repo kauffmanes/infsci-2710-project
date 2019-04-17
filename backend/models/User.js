@@ -10,7 +10,9 @@ const User = function(user) {
 	this.zipcode = user.zipcode;
 	this.city = user.city;
 	this.state_id = user.stateId;
-	this.business_id = user.business_id;
+	this.business_id = user.businessId;
+	this.email = user.email;
+	this.address = user.address;
 	// this.created_at = new Date();
 };
 
@@ -23,5 +25,16 @@ User.createUser = function createUser (newUser, result) {
 		}	
 	});
 }
+
+User.getUserByEmail = function getUserById(email, result) {
+	sql.query('SELECT * FROM Customer c, Business b WHERE c.email = ? AND c.business_id = b.business_id LIMIT 1', email, function (err, res) {
+		if (err) {
+			console.log(err);
+			result(err, null);
+			return;
+		}
+		result(null, res);
+	});
+};
 
 module.exports = User;
