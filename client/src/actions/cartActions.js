@@ -2,7 +2,9 @@ import axios from 'axios';
 
 import {
 	ADD_ITEM_TO_CART,
-	// FAILED_TO_ADD_TO_CART
+	// FAILED_TO_ADD_TO_CART,
+	FAILED_TO_COMPLETE_PURCHASE,
+	COMPLETED_TRANSACTION
 } from './types';
 
 export const addToCart = item => () => {
@@ -41,3 +43,21 @@ export const getItemsFromCart = () => dispatch => {
 		}
 	});
 };
+
+
+export const completePurchase = (data) => (dispatch) => {
+
+	if (localStorage.getItem('token')) {
+		axios.defaults.headers.common['x-access-token'] = localStorage.getItem('token');
+	} else {
+		delete axios.defaults.headers.common['x-access-token'];
+	}
+
+	axios.post('/api/transactions', data).then(response => {
+		console.log(response);
+		dispatch({ type: COMPLETED_TRANSACTION, purchaseId: response.data });
+	}).catch(err => {
+		console.log(err);
+		dispatch({ type: FAILED_TO_COMPLETE_PURCHASE, error: err });
+	});
+}
