@@ -217,6 +217,10 @@ input {
   padding: 1rem;
 }
 
-.c-cart__item input {
-  
+.c-cart__items, .c-card_shipping, .c-cart__payment {
+  margin-bottom: 2rem;
+}
+
+.c-card_shipping {
+
 }

@@ -12,9 +12,17 @@ class ShoppingCart extends Component {
 			cartRedirect: false,
 			error: null,
 			invalid: false,
-			items: []
+			items: [],
+			payment: {
+				cardNumber: '',
+				exp: '',
+				code: '',
+				fullname: ''
+			}
 		};
 		this.validateInput = this.validateInput.bind(this);
+		this.checkout = this.checkout.bind(this);
+		this.updatePayment = this.updatePayment.bind(this);
 	}
 
 	componentDidMount() {
@@ -26,6 +34,20 @@ class ShoppingCart extends Component {
 		if (prevProps.items.length !== this.props.items.length) {
 			this.setState({ items: this.props.items });
 		}
+	}
+
+	updatePayment(field, value) {
+		let obj = this.state.payment;
+		obj[field] = value;
+		this.setState({
+			payment: obj
+		});
+
+		console.log(this.state.payment)
+	}
+
+	checkout() {
+
 	}
 
 	validateInput(value, product) {
@@ -54,27 +76,49 @@ class ShoppingCart extends Component {
 		
 		return (
 			<>
-				<h2>Shopping Cart</h2>
+				<h2>Items</h2>
 				{this.props.items && this.props.items.length > 0 ? (
 					<>
-						{
-							this.state.items.map(item => {
-								return (
-									<ul className='c-cart__item'key={item.product_id}>
-										{item.name}
-										<ol>
-											<input type="number" value={item.quantity}
-												max={item.quantity_remaining} onChange={(evt) => {
-													this.validateInput(evt.target.value, item)}}
-												placeholder="quantity" />
-												({item.quantity_remaining} remaining)
-										</ol>
-									</ul>
-								);
-							})
-						}
-					<p>{this.state.error}</p>
-					<button className='o-btn-block' type='button' onClick={() => this.setState({ cartRedirect: true })}>Check out</button>
+						<div className='c-cart__items'>
+							{
+								this.state.items.map(item => {
+									return (
+										<ul className='c-cart__item'key={item.product_id}>
+											{item.name}
+											<ol>
+												<input type="number" value={item.quantity}
+													max={item.quantity_remaining} onChange={(evt) => {
+														this.validateInput(evt.target.value, item)}}
+													placeholder="quantity" />
+													({item.quantity_remaining} remaining)
+											</ol>
+										</ul>
+									);
+								})
+							}
+							<p>{this.state.error}</p>
+							<button className='o-btn-block' type='button' onClick={() => this.setState({ cartRedirect: true })}>Check out</button>
+						</div>
+						<hr />
+						<h2>Payment Information</h2>
+						<div className='c-cart__payment'>
+							<input type='text' placeholder='full name as appears on card' onChange={(evt) => this.updatePayment('fullname', evt.target.value)} value={this.state.payment.fullname} />
+							<input type="text" placeholder="XXXX XXXX XXXX XXXX" onChange={(evt) => this.updatePayment('cardNumber', evt.target.value)} value={this.state.payment.cardNumber} />
+							<input type='date' placeholder='expiration date' onChange={(evt) => this.updatePayment('exp', evt.target.value)} value={this.state.payment.exp} />
+							<input type='text' placeholder='security code' onChange={(evt) => this.updatePayment('code', evt.target.value)} value={this.state.payment.code} />
+						</div>
+						<hr/>
+						<h2>Shipping</h2>
+
+						<div className='c-card_shipping'>
+							<button onClick={this.populateAddress}>Use Address on File</button>
+							<div>
+								<input type='text' placeholder='address' />
+								<input type='text' placeholder='city' />
+								<input type='text' placeholder='state' />
+								<input type='text' placeholder='zip' />
+							</div>
+						</div>
 					</>
 				) : <p>No items in cart.</p>}
 			</>
