@@ -23,6 +23,7 @@ export default (state = initialState, action) => {
 			return { ...state, purchaseId: action.purchaseId };
 		case ADD_ITEM_TO_CART:
 			if (!(state.items.find(item => action.item.product_id === item.product_id))) {
+				console.log(state.items.length + 1)
 				return { ...state, items: [...state.items, action.item ] };
 			} else {
 				return state;

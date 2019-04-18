@@ -11,6 +11,7 @@ const verifyToken = require('./utils').verifyToken;
 usersRouter.post('/', (req, res) => {
 
 	if (req.body.businessName) {
+		
 		const newBusiness = new Business(req.body);
 		Business.createBusiness(newBusiness, function (err, businessId) {
 
@@ -30,7 +31,19 @@ usersRouter.post('/', (req, res) => {
 				return res.status(200).json(user);
 			});
 			
-		})
+		});
+	} else {
+		const newUser = new User({
+			...req.body,
+			businessId: null
+		});
+
+		User.createUser(newUser, function (err, user) {
+			if (err) {
+				return res.status(404).json(err && err.sqlMessage || 'Unable to create user.');
+			}
+			return res.status(200).json(user);
+		});
 	}
 });
 

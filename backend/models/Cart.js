@@ -8,6 +8,20 @@ const Cart = function(product) {
 };
 
 
+Cart.delete = function (customer_id, product_id, result) {
+	console.log(result)
+
+	sql.query('DELETE FROM ShoppingCart WHERE customer_id = ? AND product_id = ?', [customer_id, product_id], function (err, res) {
+		if (err) {
+			console.log('bad');
+			result(err, null);
+		} else {
+			console.log('good');
+			result(null, res.insertId);
+		}	
+	});
+}
+
 Cart.deleteMyItems = function deleteMyItems (customer_id, result) {
 	sql.query('DELETE FROM ShoppingCart WHERE customer_id = ?', customer_id, function (err, res) {
 		if (err) {

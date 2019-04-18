@@ -6,7 +6,8 @@ import {
 	FAILED_TO_COMPLETE_PURCHASE,
 	COMPLETED_TRANSACTION,
 	UPDATE_PURCHASE_HISTORY,
-	EMPTY_CART
+	EMPTY_CART,
+	DELETED_FROM_ITEMS
 } from './types';
 
 export const addToCart = item => (dispatch) => {
@@ -39,9 +40,9 @@ export const getItemsFromCart = () => dispatch => {
 	axios.get('/api/cart').then(response => {
 		const items = response && response.data;
 		
-		if (items.length < 1) {
+		// if (items.length < 1) {
 			dispatch({ type: EMPTY_CART });
-		}
+		// }
 
 		for (let i=0;i<items.length;i++) {
 			dispatch({
@@ -49,6 +50,21 @@ export const getItemsFromCart = () => dispatch => {
 				item: { ...items[i], quantity: 1}
 			});
 		}
+	});
+};
+
+export const removeFromCart = id => dispatch => {
+	if (localStorage.getItem('token')) {
+		axios.defaults.headers.common['x-access-token'] = localStorage.getItem('token');
+	} else {
+		delete axios.defaults.headers.common['x-access-token'];
+	}
+
+	axios.delete(`/api/cart/id/${id}`).then(result => {
+		dispatch(getItemsFromCart());
+		dispatch({ type: DELETED_FROM_ITEMS, id: result.data })
+	}).catch(err => {
+		console.log(err);
 	});
 };
 

@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
+import { history } from '../CustomBrowserWrapper';
 
 import {
 	getItemsFromCart,
-	completePurchase
+	completePurchase,
+	removeFromCart
 } from '../actions/cartActions';
 
 class ShoppingCart extends Component {
@@ -41,7 +43,9 @@ class ShoppingCart extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
+		console.log(this.props.items.length)
 		if (prevProps.items.length !== this.props.items.length) {
+			console.log('updated')
 			this.setState({ items: this.props.items });
 		}
 
@@ -86,6 +90,11 @@ class ShoppingCart extends Component {
 			shipping: obj
 		});
 		console.log(this.state.shipping)
+	}
+
+	deleteItem(id) {
+		this.props.removeFromCart(id);
+		history.push('/checkout');
 	}
 
 	validateInput(value, product) {
@@ -137,6 +146,7 @@ class ShoppingCart extends Component {
 														this.validateInput(evt.target.value, item)}}
 													placeholder="quantity" />
 													({item.quantity_remaining} remaining)
+													<button style={{ marginLeft: '2rem'}} onClick={() => this.deleteItem(item.product_id)} className='o-error-msg'>DELETE</button>
 											</ol>
 										</ul>
 									);
@@ -187,5 +197,6 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, {
 	getItemsFromCart,
-	completePurchase
+	completePurchase,
+	removeFromCart
 })(ShoppingCart);
