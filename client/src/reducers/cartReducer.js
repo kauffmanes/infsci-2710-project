@@ -3,6 +3,7 @@ import {
 	// FAILED_TO_COMPLETE_PURCHASE,
 	COMPLETED_TRANSACTION,
 	UPDATE_PURCHASE_HISTORY,
+	EMPTY_CART
 } from '../actions/types';
 
 const initialState = {
@@ -14,6 +15,8 @@ const initialState = {
 
 export default (state = initialState, action) => {
 	switch (action.type) {
+		case EMPTY_CART:
+			return {...state, items: [] };
 		case UPDATE_PURCHASE_HISTORY:
 			return { ...state, purchaseHistory: action.purchaseHistory };
 		case COMPLETED_TRANSACTION:

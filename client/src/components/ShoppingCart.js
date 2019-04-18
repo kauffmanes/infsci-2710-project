@@ -124,7 +124,6 @@ class ShoppingCart extends Component {
 						<div className='c-cart__items'>
 							{
 								this.state.items.sort(function(a,b) {
-
 									if (a.name < b.name) return -1;
 									if (a.name > b.name) return 1;
 									return 0;
@@ -165,11 +164,15 @@ class ShoppingCart extends Component {
 								<input type='text' onChange={(evt) => this.updateShipping('zip', evt.target.value)} placeholder='zip' value={this.state.shipping.zip} />
 							</div>
 						</div>
-						<button onClick={() => this.props.completePurchase({
-							payment: this.state.payment,
-							items: this.state.items,
-							shipping: this.state.shipping
-						})} type='button'>Complete Purchase</button>
+						<button onClick={() => {
+							// console.log(this.state.items)
+							const obj = this.state.items;
+							this.props.completePurchase({
+								payment: this.state.payment,
+								items: obj,
+								shipping: this.state.shipping
+							})
+						}} type='button'>Complete Purchase</button>
 					</>
 				) : <p>No items in cart.</p>}
 			</>

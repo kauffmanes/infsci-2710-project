@@ -7,8 +7,20 @@ const Cart = function(product) {
 	this.product_id = product.product_id;
 };
 
-Cart.create = function create (newProdcct, result) {
-	sql.query('INSERT INTO ShoppingCart SET ?', newProdcct, function (err, res) {
+
+Cart.deleteMyItems = function deleteMyItems (customer_id, result) {
+	sql.query('DELETE FROM ShoppingCart WHERE customer_id = ?', customer_id, function (err, res) {
+		if (err) {
+			result(err, null);
+		} else {
+			result(null, res.insertId);
+		}	
+	});
+}
+
+
+Cart.create = function create (newProduct, result) {
+	sql.query('INSERT INTO ShoppingCart SET ?', newProduct, function (err, res) {
 		if (err) {
 			result(err, null);
 		} else {

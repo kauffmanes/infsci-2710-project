@@ -2,10 +2,11 @@ const express = require('express');
 const purchasesRouter = express.Router();
 const Transaction = require('../models/Transaction');
 const Purchase = require('../models/Purchase');
+const Cart = require('../models/Cart');
 
 const verifyToken = require('./utils').verifyToken;
 
-purchasesRouter.post('/', verifyToken, (req, res) => {
+purchasesRouter.post('/', verifyToken, async (req, res) => {
 
 	// insert into purchase table, get the purchase ID
 	// insert that into transactions table
@@ -15,15 +16,16 @@ purchasesRouter.post('/', verifyToken, (req, res) => {
 
 	const purchaseDate = new Date();
 
-	console.log(purchases, shipping, payment);
-
 	for (let i=0;i<purchases.length;i++) {
+
 		const purchase = new Purchase({
 			product_id: purchases[i].product_id,
 			quantity: purchases[i].quantity
 		});
 
 		Purchase.createPurchase(purchase, function (err, purchaseId) {
+
+			console.log(1);
 			if (err || !purchaseId) {
 				return res.status(500).json(err && err.sqlMessage || 'Unable to complete purchase.');
 			}
@@ -35,17 +37,28 @@ purchasesRouter.post('/', verifyToken, (req, res) => {
 			});
 
 			Transaction.createTransaction(transaction, function (err, transactionId) {
+				console.log(2);
 
 				if (err || !transactionId) {
+					console.log(3);
 					return res.status(500).json(err && err.sqlMessage || 'Unable to complete purchase.');
 				}
-
-				// delete everything from cart where user ID matches
-				return res.status(200).json(transactionId);
 			});
 
 		});
 	}
+
+	Cart.deleteMyItems(req.decoded.id, function (err, response) {
+		console.log(2);
+
+		if (err) {
+			console.log(3);
+			console.log(err);
+			// return res.status(500).json(err && err.sqlMessage || 'Unable to complete purchase.');
+		}
+	});
+
+	return res.status(200).json('success');
 	
 });
 

@@ -22,11 +22,11 @@ class Header extends Component {
 		 };
 	}
 
-	componentDidUpdate(prevProps) {
-		if (this.props.currentUser && this.props.currentUser.firstName) {
-			this.props.getItemsFromCart();
-		}
-	}
+	// componentDidUpdate(prevProps) {
+	// 	if (this.props.currentUser && this.props.currentUser.firstName) {
+	// 		this.props.getItemsFromCart();
+	// 	}
+	// }
 
 	render() {
 		return (

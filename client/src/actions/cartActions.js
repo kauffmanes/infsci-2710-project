@@ -5,7 +5,8 @@ import {
 	// FAILED_TO_ADD_TO_CART,
 	FAILED_TO_COMPLETE_PURCHASE,
 	COMPLETED_TRANSACTION,
-	UPDATE_PURCHASE_HISTORY
+	UPDATE_PURCHASE_HISTORY,
+	EMPTY_CART
 } from './types';
 
 export const addToCart = item => (dispatch) => {
@@ -37,6 +38,11 @@ export const getItemsFromCart = () => dispatch => {
 
 	axios.get('/api/cart').then(response => {
 		const items = response && response.data;
+		
+		if (items.length < 1) {
+			dispatch({ type: EMPTY_CART });
+		}
+
 		for (let i=0;i<items.length;i++) {
 			dispatch({
 				type: ADD_ITEM_TO_CART,
@@ -57,6 +63,7 @@ export const completePurchase = (data) => (dispatch) => {
 
 	axios.post('/api/purchases', data).then(response => {
 		console.log(response);
+		dispatch(getItemsFromCart());
 		dispatch({ type: COMPLETED_TRANSACTION, purchaseId: response.data });
 	}).catch(err => {
 		console.log(err);
