@@ -4,7 +4,8 @@ import {
 	ADD_ITEM_TO_CART,
 	// FAILED_TO_ADD_TO_CART,
 	FAILED_TO_COMPLETE_PURCHASE,
-	COMPLETED_TRANSACTION
+	COMPLETED_TRANSACTION,
+	UPDATE_PURCHASE_HISTORY
 } from './types';
 
 export const addToCart = item => () => {
@@ -18,6 +19,7 @@ export const addToCart = item => () => {
 
 	axios.post('/api/cart', item).then(response => {
 		console.log(response);
+		getItemsFromCart();
 	}).catch(error => {
 		console.log(error)
 	});
@@ -53,7 +55,7 @@ export const completePurchase = (data) => (dispatch) => {
 		delete axios.defaults.headers.common['x-access-token'];
 	}
 
-	axios.post('/api/transactions', data).then(response => {
+	axios.post('/api/purchases', data).then(response => {
 		console.log(response);
 		dispatch({ type: COMPLETED_TRANSACTION, purchaseId: response.data });
 	}).catch(err => {
@@ -61,3 +63,21 @@ export const completePurchase = (data) => (dispatch) => {
 		dispatch({ type: FAILED_TO_COMPLETE_PURCHASE, error: err });
 	});
 }
+
+
+export const getPurchaseHistory = () => dispatch => {
+	if (localStorage.getItem('token')) {
+		axios.defaults.headers.common['x-access-token'] = localStorage.getItem('token');
+	} else {
+		delete axios.defaults.headers.common['x-access-token'];
+	}
+
+	axios.get('/api/purchases').then(response => {
+		dispatch({
+			type: UPDATE_PURCHASE_HISTORY,
+			purchaseHistory: response && response.data
+		});
+	}).catch(err => {
+		console.log(err);
+	});
+};

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { logout } from '../actions/userActions';
+import { getItemsFromCart } from '../actions/cartActions';
 
 const styles = {
 	textAlign: `left`,
@@ -13,18 +14,36 @@ const styles = {
 	justifyContent: 'space-between'
 };
 
-const Header = (props) => (
-	<header style={styles}>
-		<Link to={'/'}><h1>Robot &amp; Components Store</h1></Link>
-		<Link to='/home'>Home</Link>
-		<Link to='/checkout'>Shopping Cart {props.items && props.items.length > 0 ? `(${props.items.length})` : null}</Link>
-		{props.currentUser && props.currentUser.firstName ? (<p>{`Hi ${props.currentUser.firstName}`}  (<button onClick={props.logout} style={{ color: 'white'	}} className='o-btn-link'>logout</button>)</p>) : (<Link to='/login'>Sign Up / Login</Link>)}
-	</header>
-);
+class Header extends Component {
+	constructor(props) {
+		super(props);
+		this.state = { 
+
+		 };
+	}
+
+	componentDidUpdate(prevProps) {
+		if (this.props.currentUser && this.props.currentUser.firstName) {
+			this.props.getItemsFromCart();
+		}
+	}
+
+	render() {
+		return (
+			<header style={styles}>
+				<Link to={'/'}><h1>Robot &amp; Components Store</h1></Link>
+				<Link to='/home'>Home</Link>
+				{this.props.currentUser && this.props.currentUser.firstName ? <Link to='/history'>Purchase History</Link> : null}
+				{this.props.currentUser && this.props.currentUser.firstName ? <Link to='/checkout'>Shopping Cart {this.props.items && this.props.items.length > 0 ? `(${this.props.items.length})` : null}</Link> : null}
+				{this.props.currentUser && this.props.currentUser.firstName ? (<p>{`Hi ${this.props.currentUser.firstName}`}  (<button onClick={this.props.logout} style={{ color: 'white'	}} className='o-btn-link'>logout</button>)</p>) : (<Link to='/login'>Sign Up / Login</Link>)}
+			</header>
+		);
+	}
+}
 
 const mapStateToProps = state => ({
 	currentUser: state.user.currentUser,
 	items: state.cart.items
 });
 
-export default connect(mapStateToProps, { logout })(Header);
+export default connect(mapStateToProps, { logout, getItemsFromCart })(Header);

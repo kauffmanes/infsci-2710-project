@@ -18,4 +18,22 @@ Purchase.createPurchase = function createPurchase (newPurchase, result) {
 	});
 }
 
+// SELECT * FROM Purchases, Products, Transactions
+// WHERE Purchases.product_id = Products.product_id
+// AND Purchases.purchase_id = Transactions.purchase_id
+// AND Transactions.customer_id = 60
+
+Purchase.getAll = function getAll (customer_id, result) {
+	const query = 'SELECT * FROM Purchases, Products, Transactions WHERE Purchases.product_id = Products.product_id AND Purchases.purchase_id = Transactions.purchase_id AND Transactions.customer_id = ?';
+	console.log(query);
+	sql.query(query, customer_id, function (err, rows) {
+		if (err) {
+			result(err, null);
+		} else {
+			console.log(rows)
+			result(null, rows);
+		}	
+	});
+}
+
 module.exports = Purchase;

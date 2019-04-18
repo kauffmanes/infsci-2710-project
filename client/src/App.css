@@ -40,6 +40,15 @@ input {
   margin-top: .25rem;
 }
 
+table {
+  background: rgba(0,0,0,.1);
+  padding: 1rem;
+}
+
+tr {
+  margin-bottom: 3rem;
+}
+
 .o-layout {
   padding: 4rem;
 }

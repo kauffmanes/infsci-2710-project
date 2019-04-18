@@ -1,11 +1,11 @@
 const express = require('express');
-const transactionsRouter = express.Router();
+const purchasesRouter = express.Router();
 const Transaction = require('../models/Transaction');
 const Purchase = require('../models/Purchase');
 
 const verifyToken = require('./utils').verifyToken;
 
-transactionsRouter.post('/', verifyToken, (req, res) => {
+purchasesRouter.post('/', verifyToken, (req, res) => {
 
 	// insert into purchase table, get the purchase ID
 	// insert that into transactions table
@@ -49,15 +49,13 @@ transactionsRouter.post('/', verifyToken, (req, res) => {
 	
 });
 
-// transactionsRouter.get('/', verifyToken, (req, res) => {
-// 	Cart.getAll({
-// 		customer_id: req.decoded.id
-// 	}, function (err, response) {
-// 		if (err) {
-// 			return res.status(500).json(err);
-// 		}
-// 		return res.status(200).json(response);
-// 	});
-// });
+purchasesRouter.get('/', verifyToken, (req, res) => {
+	Purchase.getAll(req.decoded.id, function (err, response) {
+		if (err) {
+			return res.status(500).json(err);
+		}
+		return res.status(200).json(response);
+	});
+});
 
-module.exports = transactionsRouter;
+module.exports = purchasesRouter;
