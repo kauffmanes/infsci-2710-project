@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {
 	getProductDetails,
 	getCategoriesById
 } from '../actions/productsActions';
+
+import {
+	addToCart
+} from '../actions/cartActions';
+
+import ShoppingCart from '../components/ShoppingCart';
 import Layout from '../components/Layout';
 import Placeholder from '../placeholder.jpg';
 
@@ -12,7 +18,8 @@ class ProductDetails extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			homeRedirect: false
+			homeRedirect: false,
+			loginRedirect: false
 		}
 		this.addtoCart = this.addtoCart.bind(this);
 	}
@@ -34,12 +41,19 @@ class ProductDetails extends Component {
 		}
 	}
 
-	addtoCart() {
-		console.log('added')
+	addtoCart(details) {
+		console.log(this.props.token)
+		if (!this.props.token) {
+			this.setState({ loginRedirect: true });
+		}
+		this.props.addToCart(details);
 	}
 
   render() {
 		let details = this.props.productDetails;
+		if (this.state.loginRedirect) {
+			return <Redirect to='/login'/>;
+		}
 		return (
 			<Layout>
 				<div className='o-breadcrumbs'>
@@ -50,10 +64,10 @@ class ProductDetails extends Component {
 					<div className='c-details__about'>
 						<h2>{details.name}</h2>
 						<p>{details.description}</p>
-						<button className='o-btn-block' type='button' onClick={this.addtoCart}>Add to Cart</button>
+						<button className='o-btn-block' type='button' onClick={() => this.addtoCart(details)}>Add to Cart</button>
 					</div>
 					<div className='c-details__cart'>
-						
+						<ShoppingCart />
 					</div>
 				</div>
 				<div className='c-related'>
@@ -64,7 +78,7 @@ class ProductDetails extends Component {
 								<div className='c-details__about'>
 									<img src={product.imgUrl || Placeholder} alt={product.name} />
 									<Link to={`/products/id/${product.product_id}`}><h2>{product.name}</h2></Link>
-									<button className='o-btn-block' type='button' onClick={this.addtoCart}>Add to Cart</button>
+									<button className='o-btn-block' type='button' onClick={() => this.addtoCart(product)}>Add to Cart</button>
 								</div>
 							</div>
 						))}
@@ -77,11 +91,13 @@ class ProductDetails extends Component {
 
 const mapStatetoProps = state => ({
 	productDetails: state.products.productDetails,
-	relatedCategories: state.products.relatedCategories
+	relatedCategories: state.products.relatedCategories,
+	token: state.user.token
 }); 
 
 export default connect(mapStatetoProps, {
 	getProductDetails,
-	getCategoriesById
+	getCategoriesById,
+	addToCart
 })(ProductDetails);
 

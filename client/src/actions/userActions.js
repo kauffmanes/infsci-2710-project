@@ -29,9 +29,9 @@ export const login = (credentials) => dispatch => {
 	axios.post('/api/users/authenticate', credentials).then(response => {
 		const token = response && response.data && response.data;
 		localStorage.setItem('token', token);
-		dispatch({ type: UPDATE_TOKEN, token });
+		dispatch(updateToken(token));
 		const decoded = decodeToken(token);
-  	dispatch(setCurrentUser(decoded));
+		dispatch(setCurrentUser(decoded));
 	}).catch(error => {
 		console.log(error)
 		dispatch({ type: FAILED_TO_AUTHENTICATE, error: error && error.response && error.response.data || 'Unable to authenticate.' })
@@ -39,7 +39,7 @@ export const login = (credentials) => dispatch => {
 };
 
 export const logout = () => dispatch => {
-	history.push('/');
+	// window.location.href = '/login';
 	localStorage.removeItem('token');
 	dispatch({ type: UPDATE_TOKEN, token: null });
 	dispatch(clearCurrentUser());
@@ -48,6 +48,10 @@ export const logout = () => dispatch => {
 
 export const clearCurrentUser = () => dispatch => {
 	dispatch({ type: CLEAR_CURRENT_USER })
+};
+
+export const updateToken = (token) => dispatch => {
+	dispatch({ type: UPDATE_TOKEN, token });
 };
 
 export const setCurrentUser = (decoded) => dispatch => {

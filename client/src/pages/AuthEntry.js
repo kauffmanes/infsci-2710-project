@@ -14,6 +14,7 @@ class AuthEntry extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			homeRedirect: false,
 			newUserData: {
 				firstName: '',
 				lastName: '',
@@ -41,6 +42,13 @@ class AuthEntry extends Component {
 		this.validateNewUser = this.validateNewUser.bind(this);
 		this.login = this.login.bind(this);
 		this.handleBusinessChange = this.handleBusinessChange.bind(this);
+	}
+
+	componentDidMount() {
+		console.log('tes')
+		if (!this.props.token) {
+			this.setState({ homeRedirect: true });
+		}
 	}
 
 	handleChange(field, value) {
@@ -164,7 +172,7 @@ class AuthEntry extends Component {
 	render() {
 
 		if (this.props.token) {
-			return <Redirect to='/' />;
+			return <Redirect to='/home' />;
 		}
 
 		return (
@@ -234,6 +242,7 @@ class AuthEntry extends Component {
 						<button type='button' onClick={this.validateNewUser}>Sign up</button>
 						{this.state.createUserError.map((error, idx) => <p className='o-error-msg' key={idx}>{error}</p>)}
 						<p className='o-error-msg'>{this.props.error ? `Error: ${this.props.error}` : null}</p>
+						{this.props.userId ? <p className='o-success-msg'>Account was created successfully. Login to continue.</p> : null}
 					</div>
 					<div className='c-auth__login'>
 						<h2>Log in!</h2>
@@ -246,8 +255,8 @@ class AuthEntry extends Component {
 								Password
 								<input type='password' onChange={(evt) => this.handleLoginChange('password', evt.target.value )} />
 							</label>
+							<button type='button' onClick={this.login}>Login</button>
 						</form>
-						<button type='button' onClick={this.login}>Login</button>
 						{this.state.loginErrors.map((error, idx) => <p className='o-error-msg' key={idx}>{error}</p>)}
 						<p className='o-error-msg'>{this.props.error ? `Error: ${this.props.error}` : null}</p>
 					</div>
