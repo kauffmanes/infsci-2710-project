@@ -72,6 +72,7 @@ class ProductDetails extends Component {
 					<div className='c-details__about'>
 						<h2>{details.name}</h2>
 						<p>{details.description}</p>
+						<p># in stock: {details.quantity_remaining || 'Unknown'}</p>
 						<button className='o-btn-block' type='button' onClick={() => this.addtoCart(details)}>Add to Cart</button>
 					</div>
 				</div>

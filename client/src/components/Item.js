@@ -18,6 +18,7 @@ class Item extends Component {
 				<img onClick={() => this.setState({ itemRedirect: true })} src={Placeholder} alt={this.props.name} />
 				<Link to={href}><h2>{this.props.name}</h2></Link>
 				<p>{`$${this.props.price.toFixed(2)}`}</p>
+				<p># in stock: {this.props.quantity_remaining || 'Unknown'}</p>
 			</div>
 		);
 	}
