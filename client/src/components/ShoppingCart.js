@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import {
-	getItemsFromCart
+	getItemsFromCart,
+	completePurchase
 } from '../actions/cartActions';
 
 class ShoppingCart extends Component {
@@ -13,6 +14,12 @@ class ShoppingCart extends Component {
 			error: null,
 			invalid: false,
 			items: [],
+			shipping: {
+				address: '',
+				city: '',
+				state: '',
+				zip: ''
+			},
 			payment: {
 				cardNumber: '',
 				exp: '',
@@ -21,8 +28,8 @@ class ShoppingCart extends Component {
 			}
 		};
 		this.validateInput = this.validateInput.bind(this);
-		this.checkout = this.checkout.bind(this);
 		this.updatePayment = this.updatePayment.bind(this);
+		this.updateShipping = this.updateShipping.bind(this);
 	}
 
 	componentDidMount() {
@@ -33,6 +40,10 @@ class ShoppingCart extends Component {
 	componentDidUpdate(prevProps) {
 		if (prevProps.items.length !== this.props.items.length) {
 			this.setState({ items: this.props.items });
+		}
+
+		if (this.props.purchaseId && this.props.purchaseId !== prevProps.purchaseId) {
+			this.setState({ transactionComplete: true });
 		}
 	}
 
@@ -46,8 +57,13 @@ class ShoppingCart extends Component {
 		console.log(this.state.payment)
 	}
 
-	checkout() {
-
+	updateShipping(field, value) {
+		let obj = this.state.shipping;
+		obj[field] = value;
+		this.setState({
+			shipping: obj
+		});
+		console.log(this.state.shipping)
 	}
 
 	validateInput(value, product) {
@@ -72,6 +88,10 @@ class ShoppingCart extends Component {
 	render() {
 		if (this.state.cartRedirect) {
 			return <Redirect to='/checkout' />;
+		}
+
+		if (this.state.transactionComplete) {
+			return <Redirect to='/purchase-summary' />;
 		}
 		
 		return (
@@ -113,12 +133,17 @@ class ShoppingCart extends Component {
 						<div className='c-card_shipping'>
 							<button onClick={this.populateAddress}>Use Address on File</button>
 							<div>
-								<input type='text' placeholder='address' />
-								<input type='text' placeholder='city' />
-								<input type='text' placeholder='state' />
-								<input type='text' placeholder='zip' />
+								<input type='text' onChange={(evt) => this.updateShipping('address', evt.target.value)} placeholder='address' value={this.state.shipping.address}/>
+								<input type='text' onChange={(evt) => this.updateShipping('city', evt.target.value)} placeholder='city' value={this.state.shipping.city} />
+								<input type='text' onChange={(evt) => this.updateShipping('state', evt.target.value)} placeholder='state' value={this.state.shipping.state} />
+								<input type='text' onChange={(evt) => this.updateShipping('zip', evt.target.value)} placeholder='zip' value={this.state.shipping.zip} />
 							</div>
 						</div>
+						<button onClick={() => this.props.completePurchase({
+							payment: this.state.payment,
+							items: this.state.items,
+							shipping: this.state.shipping
+						})} type='button'>Complete Purchase</button>
 					</>
 				) : <p>No items in cart.</p>}
 			</>
@@ -127,9 +152,11 @@ class ShoppingCart extends Component {
 }
 
 const mapStateToProps = state => ({
-	items: state.cart.items
+	items: state.cart.items,
+	purchaseId: state.cart.purchaseId
 });
 
 export default connect(mapStateToProps, {
-	getItemsFromCart
+	getItemsFromCart,
+	completePurchase
 })(ShoppingCart);
