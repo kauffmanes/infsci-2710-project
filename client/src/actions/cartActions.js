@@ -8,7 +8,7 @@ import {
 	UPDATE_PURCHASE_HISTORY
 } from './types';
 
-export const addToCart = item => () => {
+export const addToCart = item => (dispatch) => {
 
 	// if token exists, use it
 	if (localStorage.getItem('token')) {
@@ -19,7 +19,7 @@ export const addToCart = item => () => {
 
 	axios.post('/api/cart', item).then(response => {
 		console.log(response);
-		getItemsFromCart();
+		dispatch(getItemsFromCart());
 	}).catch(error => {
 		console.log(error)
 	});

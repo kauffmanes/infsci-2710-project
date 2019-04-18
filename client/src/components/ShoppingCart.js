@@ -123,7 +123,12 @@ class ShoppingCart extends Component {
 					<>
 						<div className='c-cart__items'>
 							{
-								this.state.items.map(item => {
+								this.state.items.sort(function(a,b) {
+
+									if (a.name < b.name) return -1;
+									if (a.name > b.name) return 1;
+									return 0;
+								}).map(item => {
 									return (
 										<ul className='c-cart__item'key={item.product_id}>
 											{item.name}

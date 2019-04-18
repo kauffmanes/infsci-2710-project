@@ -10,7 +10,7 @@ import {
 	addToCart
 } from '../actions/cartActions';
 
-import ShoppingCart from '../components/ShoppingCart';
+// import ShoppingCart from '../components/ShoppingCart';
 import Layout from '../components/Layout';
 import Placeholder from '../placeholder.jpg';
 
@@ -19,7 +19,8 @@ class ProductDetails extends Component {
 		super(props);
 		this.state = {
 			homeRedirect: false,
-			loginRedirect: false
+			loginRedirect: false,
+			error: ''
 		}
 		this.addtoCart = this.addtoCart.bind(this);
 	}
@@ -42,11 +43,17 @@ class ProductDetails extends Component {
 	}
 
 	addtoCart(details) {
-		console.log(this.props.token)
+
+		this.setState({ error: '' })
 		if (!this.props.token) {
 			this.setState({ loginRedirect: true });
 		}
-		this.props.addToCart(details);
+
+		if (!(this.props.items.find(item => details.product_id === item.product_id))) {
+			this.props.addToCart(details);	
+		} else {
+			this.setState({ error: 'That item is already in your cart.' });
+		}
 	}
 
   render() {
@@ -59,6 +66,7 @@ class ProductDetails extends Component {
 				<div className='o-breadcrumbs'>
 					<Link to='Products' /><Link to='/home'>Home</Link> / <Link to={`/home?cat=${details.category_id}`}>{details.category_name}</Link> / {details.name}
 				</div>
+				<p className='o-error-msg'>{this.state.error}</p>
 				<div className="c-details">
 					<div className='c-details__img'><img src={details.imgUrl || Placeholder} alt={this.props.name} /></div>
 					<div className='c-details__about'>
@@ -66,24 +74,23 @@ class ProductDetails extends Component {
 						<p>{details.description}</p>
 						<button className='o-btn-block' type='button' onClick={() => this.addtoCart(details)}>Add to Cart</button>
 					</div>
-					{/* <div className='c-details__cart'>
-						<ShoppingCart />
-					</div> */}
 				</div>
-				<div className='c-related'>
-					<h2>{`Other popular items in category "${details.category_name}"`}:</h2>
-					<div className='c-related__items'>
-						{this.props.relatedCategories.map(product => (
-							<div className="c-details" key={product.product_id}>
-								<div className='c-details__about'>
-									<img src={product.imgUrl || Placeholder} alt={product.name} />
-									<Link to={`/products/id/${product.product_id}`}><h2>{product.name}</h2></Link>
-									<button className='o-btn-block' type='button' onClick={() => this.addtoCart(product)}>Add to Cart</button>
+				{this.props.relatedCategories && this.props.relatedCategories.length > 0 ? (
+					<div className='c-related'>
+						<h2>{`Other popular items in category "${details.category_name}"`}:</h2>
+						<div className='c-related__items'>
+							{this.props.relatedCategories.map(product => (
+								<div className="c-details" key={product.product_id}>
+									<div className='c-details__about'>
+										<img src={product.imgUrl || Placeholder} alt={product.name} />
+										<Link to={`/products/id/${product.product_id}`}><h2>{product.name}</h2></Link>
+										<button className='o-btn-block' type='button' onClick={() => this.addtoCart(product)}>Add to Cart</button>
+									</div>
 								</div>
-							</div>
-						))}
+							))}
+						</div>
 					</div>
-				</div>
+				) : null}
 			</Layout>
     );
   }
@@ -92,7 +99,8 @@ class ProductDetails extends Component {
 const mapStatetoProps = state => ({
 	productDetails: state.products.productDetails,
 	relatedCategories: state.products.relatedCategories,
-	token: state.user.token
+	token: state.user.token,
+	items: state.cart.items
 }); 
 
 export default connect(mapStatetoProps, {
