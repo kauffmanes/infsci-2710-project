@@ -17,13 +17,14 @@ const Header = (props) => (
 	<header style={styles}>
 		<Link to={'/'}><h1>Robot &amp; Components Store</h1></Link>
 		<Link to='/home'>Home</Link>
-		<Link to='/checkout'>Shopping Cart</Link>
+		<Link to='/checkout'>Shopping Cart {props.items && props.items.length > 0 ? `(${props.items.length})` : null}</Link>
 		{props.currentUser && props.currentUser.firstName ? (<p>{`Hi ${props.currentUser.firstName}`}  (<button onClick={props.logout} style={{ color: 'white'	}} className='o-btn-link'>logout</button>)</p>) : (<Link to='/login'>Sign Up / Login</Link>)}
 	</header>
 );
 
 const mapStateToProps = state => ({
-	currentUser: state.user.currentUser
+	currentUser: state.user.currentUser,
+	items: state.cart.items
 });
 
 export default connect(mapStateToProps, { logout })(Header);

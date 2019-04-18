@@ -26,7 +26,6 @@ if (localStorage.getItem('token')) {
   }
 }
 
-
 class App extends Component {
   render() {
     return (

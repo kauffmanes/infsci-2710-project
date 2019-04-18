@@ -66,9 +66,9 @@ class ProductDetails extends Component {
 						<p>{details.description}</p>
 						<button className='o-btn-block' type='button' onClick={() => this.addtoCart(details)}>Add to Cart</button>
 					</div>
-					<div className='c-details__cart'>
+					{/* <div className='c-details__cart'>
 						<ShoppingCart />
-					</div>
+					</div> */}
 				</div>
 				<div className='c-related'>
 					<h2>{`Other popular items in category "${details.category_name}"`}:</h2>
