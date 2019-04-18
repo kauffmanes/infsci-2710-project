@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import axios from 'axios';
+
 import {
 	getItemsFromCart,
 	completePurchase
@@ -30,6 +32,7 @@ class ShoppingCart extends Component {
 		this.validateInput = this.validateInput.bind(this);
 		this.updatePayment = this.updatePayment.bind(this);
 		this.updateShipping = this.updateShipping.bind(this);
+		this.populateAddress = this.populateAddress.bind(this);
 	}
 
 	componentDidMount() {
@@ -45,6 +48,25 @@ class ShoppingCart extends Component {
 		if (this.props.purchaseId && this.props.purchaseId !== prevProps.purchaseId) {
 			this.setState({ transactionComplete: true });
 		}
+	}
+
+	populateAddress() {
+		if (localStorage.getItem('token')) {
+			axios.defaults.headers.common['x-access-token'] = localStorage.getItem('token');
+		} else {
+			delete axios.defaults.headers.common['x-access-token'];
+		}
+
+		axios.get('/api/users/me').then(response => {
+			const me = response && response.data && response.data[0];
+			const obj = this.state.shipping;
+			console.log(me)
+			obj['city'] = me.city;
+			obj['zip'] = me.zipcode;
+			obj['address'] = me.address;
+			console.log(obj)
+			this.setState({ shipping: obj });
+		});
 	}
 
 	updatePayment(field, value) {
@@ -117,7 +139,6 @@ class ShoppingCart extends Component {
 								})
 							}
 							<p>{this.state.error}</p>
-							<button className='o-btn-block' type='button' onClick={() => this.setState({ cartRedirect: true })}>Check out</button>
 						</div>
 						<hr />
 						<h2>Payment Information</h2>

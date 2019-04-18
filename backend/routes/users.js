@@ -5,6 +5,8 @@ const usersRouter = express.Router();
 const User = require('../models/User');
 const Business = require('../models/Business');
 
+const verifyToken = require('./utils').verifyToken;
+
 // creates a new user
 usersRouter.post('/', (req, res) => {
 
@@ -45,6 +47,16 @@ usersRouter.get('/id/:id', (req, res) => {
 	});
 });
 
+
+usersRouter.get('/me', verifyToken, (req, res) => {
+	const userId = req.decoded.id;
+	User.getUserById(userId, function (err, response) {
+		if (err) {
+			return res.status(500).json(err);
+		}
+		return res.status(200).json(response);
+	});
+});
 
 // authenticates a user
 usersRouter.post('/authenticate', (req, res) => {
