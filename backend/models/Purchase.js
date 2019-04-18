@@ -13,7 +13,11 @@ Purchase.createPurchase = function createPurchase (newPurchase, result) {
 		if (err) {
 			result(err, null);
 		} else {
-			result(null, res.insertId);
+			sql.query('UPDATE Products SET quantity_remaining = (quantity_remaining - ?) WHERE product_id = ? ', [newPurchase.quantity_sold, newPurchase.product_id], function(err, res) {
+
+			});
+
+			// result(null, res.insertId);
 		}	
 	});
 }
