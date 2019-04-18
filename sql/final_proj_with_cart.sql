@@ -2,8 +2,8 @@
 -- version 4.4.15.9
 -- https://www.phpmyadmin.net
 --
--- Host: 127.0.0.1
--- Generation Time: Apr 18, 2019 at 03:18 PM
+-- Host: localhost
+-- Generation Time: Apr 18, 2019 at 03:58 PM
 -- Server version: 5.6.37
 -- PHP Version: 5.6.31
 
@@ -1245,7 +1245,9 @@ ALTER TABLE `Purchases`
 -- Indexes for table `ShoppingCart`
 --
 ALTER TABLE `ShoppingCart`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK_Customer` (`customer_id`),
+  ADD KEY `FK_Product` (`product_id`);
 
 --
 -- Indexes for table `State`
@@ -1327,6 +1329,13 @@ ALTER TABLE `Products`
 --
 ALTER TABLE `Purchases`
   ADD CONSTRAINT `FK_ProductID` FOREIGN KEY (`product_id`) REFERENCES `Products` (`product_id`);
+
+--
+-- Constraints for table `ShoppingCart`
+--
+ALTER TABLE `ShoppingCart`
+  ADD CONSTRAINT `FK_Customer` FOREIGN KEY (`customer_id`) REFERENCES `Customer` (`customer_id`),
+  ADD CONSTRAINT `FK_Product` FOREIGN KEY (`product_id`) REFERENCES `Products` (`product_id`);
 
 --
 -- Constraints for table `Transactions`
