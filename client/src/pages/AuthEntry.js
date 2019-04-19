@@ -45,7 +45,6 @@ class AuthEntry extends Component {
 	}
 
 	componentDidMount() {
-		console.log('tes')
 		if (!this.props.token) {
 			this.setState({ homeRedirect: true });
 		}
@@ -109,7 +108,7 @@ class AuthEntry extends Component {
 
 		Object.entries(this.state.newUserData).forEach(([key, value]) => {
 			if (!value) {
-				errors.push(`${key} is a required field.`);
+				errors.push(`${key} is a required feld.`);
 			}
 		});
 
@@ -134,7 +133,7 @@ class AuthEntry extends Component {
 		});
 
 		if (errors.length === 0) {
-			this.props.createUser(Object.assign(this.state.newUserData, this.state.businessData));
+			this.props.createUser({ ...this.state.newUserData, ...this.state.businessData });
 		}
 	}
 
