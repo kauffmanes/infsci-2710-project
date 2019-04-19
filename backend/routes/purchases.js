@@ -26,8 +26,9 @@ purchasesRouter.post('/', verifyToken, async (req, res) => {
 		Purchase.createPurchase(purchase, function (err, purchaseId) {
 
 			console.log(1);
+
 			if (err || !purchaseId) {
-				return res.status(500).json(err && err.sqlMessage || 'Unable to complete purchase.');
+				console.log(err);
 			}
 			
 			const transaction = new Transaction({
@@ -36,12 +37,15 @@ purchasesRouter.post('/', verifyToken, async (req, res) => {
 				date_of_transaction: purchaseDate
 			});
 
+
+			console.log(transaction)
 			Transaction.createTransaction(transaction, function (err, transactionId) {
 				console.log(2);
 
 				if (err || !transactionId) {
 					console.log(3);
-					return res.status(500).json(err && err.sqlMessage || 'Unable to complete purchase.');
+					// return res.status(500).json(err && err.sqlMessage || 'Unable to complete purchase.');
+					console.log(err)
 				}
 			});
 
@@ -49,8 +53,6 @@ purchasesRouter.post('/', verifyToken, async (req, res) => {
 	}
 
 	Cart.deleteMyItems(req.decoded.id, function (err, response) {
-		console.log(2);
-
 		if (err) {
 			console.log(3);
 			console.log(err);

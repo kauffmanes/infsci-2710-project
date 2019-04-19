@@ -23,8 +23,10 @@ Cart.delete = function (customer_id, product_id, result) {
 }
 
 Cart.deleteMyItems = function deleteMyItems (customer_id, result) {
+	console.log('dleting', customer_id)
 	sql.query('DELETE FROM ShoppingCart WHERE customer_id = ?', customer_id, function (err, res) {
 		if (err) {
+			console.log(err)
 			result(err, null);
 		} else {
 			result(null, res.insertId);
