@@ -17,12 +17,20 @@ const User = function(user) {
 };
 
 User.createUser = function createUser (newUser, result) {
-	sql.query('INSERT INTO Customer SET ?', newUser, function (err, res) {
-		if (err) {
-			result(err, null);
+
+	sql.query('SELECT customer_id FROM Customer WHERE email = ?', newUser.email, function (err, res) {
+		if (res.length === 0) {
+			sql.query('INSERT INTO Customer SET ?', newUser, function (err, res) {
+				if (err) {
+					result(err, null);
+				} else {
+					result(null, res.insertId);
+				}	
+			});
 		} else {
-			result(null, res.insertId);
-		}	
+			result({ sqlMessage: 'A user with that email already exists.' }, null);
+		}
+
 	});
 }
 
