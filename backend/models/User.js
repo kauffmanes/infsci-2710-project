@@ -27,12 +27,13 @@ User.createUser = function createUser (newUser, result) {
 }
 
 User.getUserByEmail = function getUserByEmail(email, result) {
-	sql.query('SELECT * FROM Customer c, Business b WHERE c.email = ? AND c.business_id = b.business_id LIMIT 1', email, function (err, res) {
+	sql.query('SELECT * FROM Customer c, Business b WHERE c.email = ? AND (c.business_id = b.business_id OR c.business_id IS NULL) LIMIT 1', email, function (err, res) {
 		if (err) {
 			console.log(err);
 			result(err, null);
 			return;
 		}
+		console.log(res);
 		result(null, res);
 	});
 };

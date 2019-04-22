@@ -85,8 +85,10 @@ usersRouter.post('/authenticate', (req, res) => {
 	
 			let user; 
 
+			console.log(response)
 			if (Array.isArray(response) && response.length === 1) {
 				user = response[0];
+				console.log(response)
 			} else {
 				return res.status(400).send('No user was found for that email.');
 			}
