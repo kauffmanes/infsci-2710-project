@@ -23,6 +23,7 @@ if (localStorage.getItem('token')) {
     store.dispatch(logout());
     store.dispatch(clearCurrentUser());
     window.location.href = '/';
+    window.location.reload();
   }
 }
 
