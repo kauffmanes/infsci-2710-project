@@ -24,7 +24,7 @@ class ProductDetails extends Component {
 		}
 		this.addtoCart = this.addtoCart.bind(this);
 	}
- 
+
 	componentDidMount() {
 		const productId = this.props.match && this.props.match.params && this.props.match.params.productId;
 		this.props.getProductDetails(productId);
@@ -45,12 +45,13 @@ class ProductDetails extends Component {
 	addtoCart(details) {
 
 		this.setState({ error: '' })
+
 		if (!this.props.token) {
 			this.setState({ loginRedirect: true });
 		}
 
 		if (!(this.props.items.find(item => details.product_id === item.product_id))) {
-			this.props.addToCart(details);	
+			this.props.addToCart(details);
 		} else {
 			this.setState({ error: 'That item is already in your cart.' });
 		}
@@ -73,7 +74,7 @@ class ProductDetails extends Component {
 						<h2>{details.name}</h2>
 						<p>{details.description}</p>
 						<p># in stock: {details.quantity_remaining || 'Unknown'}</p>
-						<button className='o-btn-block' type='button' onClick={() => this.addtoCart(details)}>Add to Cart</button>
+						<button disabled={details.quantity_remaining === 0 || !details.quantity_remaining} className='o-btn-block' type='button' onClick={() => this.addtoCart(details)}>Add to Cart</button>
 					</div>
 				</div>
 				{this.props.relatedCategories && this.props.relatedCategories.length > 0 ? (
@@ -102,7 +103,7 @@ const mapStatetoProps = state => ({
 	relatedCategories: state.products.relatedCategories,
 	token: state.user.token,
 	items: state.cart.items
-}); 
+});
 
 export default connect(mapStatetoProps, {
 	getProductDetails,
