@@ -44,6 +44,7 @@ export const logout = () => dispatch => {
 	dispatch({ type: UPDATE_TOKEN, token: null });
 	dispatch(clearCurrentUser());
 	setAuthToken(false);
+	window.location.reload();
 };
 
 export const clearCurrentUser = () => dispatch => {

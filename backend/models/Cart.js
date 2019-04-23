@@ -9,8 +9,6 @@ const Cart = function(product) {
 
 
 Cart.delete = function (customer_id, product_id, result) {
-	console.log(result)
-
 	sql.query('DELETE FROM ShoppingCart WHERE customer_id = ? AND product_id = ?', [customer_id, product_id], function (err, res) {
 		if (err) {
 			console.log('bad');
@@ -23,7 +21,6 @@ Cart.delete = function (customer_id, product_id, result) {
 }
 
 Cart.deleteMyItems = function deleteMyItems (customer_id, result) {
-	console.log('dleting', customer_id)
 	sql.query('DELETE FROM ShoppingCart WHERE customer_id = ?', customer_id, function (err, res) {
 		if (err) {
 			console.log(err)
@@ -46,8 +43,8 @@ Cart.create = function create (newProduct, result) {
 }
 
 Cart.getAll = function (options, result) {
-	const query = `SELECT Products.* FROM ShoppingCart, Products, Customer WHERE ShoppingCart.product_id = Products.product_id AND ShoppingCart.customer_id = Customer.customer_id`;
-	sql.query(query, function (err, rows) {
+	const query = `SELECT Products.* FROM ShoppingCart, Products, Customer WHERE ShoppingCart.product_id = Products.product_id AND ShoppingCart.customer_id = Customer.customer_id AND Customer.customer_id = ?`;
+	sql.query(query, options.customer_id, function (err, rows) {
 		if (err) {
 			console.log(err);
 			result(err, null);
