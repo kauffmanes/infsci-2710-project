@@ -25,8 +25,6 @@ purchasesRouter.post('/', verifyToken, async (req, res) => {
 
 		Purchase.createPurchase(purchase, function (err, purchaseId) {
 
-			console.log(1);
-
 			if (err || !purchaseId) {
 				console.log(err);
 			}
@@ -38,12 +36,10 @@ purchasesRouter.post('/', verifyToken, async (req, res) => {
 			});
 
 
-			console.log(transaction)
 			Transaction.createTransaction(transaction, function (err, transactionId) {
 				console.log(2);
 
 				if (err || !transactionId) {
-					console.log(3);
 					// return res.status(500).json(err && err.sqlMessage || 'Unable to complete purchase.');
 					console.log(err)
 				}
@@ -54,7 +50,6 @@ purchasesRouter.post('/', verifyToken, async (req, res) => {
 
 	Cart.deleteMyItems(req.decoded.id, function (err, response) {
 		if (err) {
-			console.log(3);
 			console.log(err);
 			// return res.status(500).json(err && err.sqlMessage || 'Unable to complete purchase.');
 		}
@@ -62,6 +57,15 @@ purchasesRouter.post('/', verifyToken, async (req, res) => {
 
 	return res.status(200).json('success');
 	
+});
+
+purchasesRouter.get('/trends', verifyToken, (req, res) => {
+	Purchase.getTrends(req.decoded.id, function (err, response) {
+		if (err) {
+			return res.status(500).json(err);
+		}
+		return res.status(200).json(response);
+	});
 });
 
 purchasesRouter.get('/', verifyToken, (req, res) => {

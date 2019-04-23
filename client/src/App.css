@@ -49,6 +49,10 @@ tr {
   margin-bottom: 3rem;
 }
 
+th, td {
+  padding: 12px;
+}
+
 .o-layout {
   padding: 4rem;
 }

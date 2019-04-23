@@ -7,7 +7,8 @@ import {
 	COMPLETED_TRANSACTION,
 	UPDATE_PURCHASE_HISTORY,
 	EMPTY_CART,
-	DELETED_FROM_ITEMS
+	DELETED_FROM_ITEMS,
+	UPDATE_PURCHASE_TRENDS
 } from './types';
 
 export const addToCart = item => (dispatch) => {
@@ -87,6 +88,23 @@ export const completePurchase = (data) => (dispatch) => {
 	});
 }
 
+export const getPurchaseTrends = () => dispatch => {
+	if (localStorage.getItem('token')) {
+		axios.defaults.headers.common['x-access-token'] = localStorage.getItem('token');
+	} else {
+		delete axios.defaults.headers.common['x-access-token'];
+	}
+
+	axios.get('/api/purchases/trends').then(response => {
+		console.log(response.data)
+		dispatch({
+			type: UPDATE_PURCHASE_TRENDS,
+			purchaseTrends: response && response.data
+		});
+	}).catch(err => {
+		console.log(err);
+	});
+};
 
 export const getPurchaseHistory = () => dispatch => {
 	if (localStorage.getItem('token')) {

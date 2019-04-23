@@ -73,7 +73,9 @@ class ProductDetails extends Component {
 					<div className='c-details__about'>
 						<h2>{details.name}</h2>
 						<p>{details.description}</p>
-						<p># in stock: {details.quantity_remaining || 'Unknown'}</p>
+						<p># in stock: {details.quantity_remaining || details.quantity_remaining === 0 || details.quantity_remaining === '0' ? (
+							details.quantity_remaining
+						) : 'Unknown'}</p>
 						<button disabled={details.quantity_remaining === 0 || !details.quantity_remaining} className='o-btn-block' type='button' onClick={() => this.addtoCart(details)}>Add to Cart</button>
 					</div>
 				</div>
@@ -86,7 +88,10 @@ class ProductDetails extends Component {
 									<div className='c-details__about'>
 										<img src={product.imgUrl || Placeholder} alt={product.name} />
 										<Link to={`/products/id/${product.product_id}`}><h2>{product.name}</h2></Link>
-										<button className='o-btn-block' disabled={product.quantity_remaining === 0 || !details.quantity_remaining} type='button' onClick={() => this.addtoCart(product)}>Add to Cart</button>
+										<p># in stock: {product.quantity_remaining || product.quantity_remaining === 0 || product.quantity_remaining === '0' ? (
+											product.quantity_remaining
+										) : 'Unknown'}</p>
+										<button className='o-btn-block' disabled={!(product.quantity_remaining)} type='button' onClick={() => this.addtoCart(product)}>Add to Cart</button>
 									</div>
 								</div>
 							))}

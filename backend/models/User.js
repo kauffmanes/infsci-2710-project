@@ -47,7 +47,7 @@ User.getUserByEmail = function getUserByEmail(email, result) {
 };
 
 User.getUserById = function getUserById(id, result) {
-	sql.query('SELECT * FROM Customer c, Business b WHERE c.customer_id = ? AND c.business_id = b.business_id LIMIT 1', id, function (err, res) {
+	sql.query('SELECT * FROM Customer c, Business b WHERE c.customer_id = ? AND (c.business_id = b.business_id OR c.business_id IS NULL) LIMIT 1', id, function (err, res) {
 		if (err) {
 			console.log(err);
 			result(err, null);

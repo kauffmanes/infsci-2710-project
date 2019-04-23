@@ -21,7 +21,7 @@ class ShoppingCart extends Component {
 			shipping: {
 				address: '',
 				city: '',
-				state: '',
+				// state: '',
 				zip: ''
 			},
 			payment: {
@@ -170,7 +170,7 @@ class ShoppingCart extends Component {
 							<div>
 								<input type='text' onChange={(evt) => this.updateShipping('address', evt.target.value)} placeholder='address' value={this.state.shipping.address}/>
 								<input type='text' onChange={(evt) => this.updateShipping('city', evt.target.value)} placeholder='city' value={this.state.shipping.city} />
-								<input type='text' onChange={(evt) => this.updateShipping('state', evt.target.value)} placeholder='state' value={this.state.shipping.state} />
+								{/* <input type='text' onChange={(evt) => this.updateShipping('state', evt.target.value)} placeholder='state' value={this.state.shipping.state} /> */}
 								<input type='text' onChange={(evt) => this.updateShipping('zip', evt.target.value)} placeholder='zip' value={this.state.shipping.zip} />
 							</div>
 						</div>
